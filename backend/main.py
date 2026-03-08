@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from backend.routers import auth_router
 
 app = FastAPI(
     title="EcoRetiro API",
@@ -7,7 +8,6 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:5500"],
@@ -16,7 +16,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Routers
+app.include_router(auth_router.router)
+
 @app.get("/")
 async def root() -> dict[str, str]:
-    # Endpoint de verificación de estado del servidor
     return {"status": "ok", "project": "EcoRetiro API"}
