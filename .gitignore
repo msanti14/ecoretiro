@@ -5,7 +5,7 @@ venv/
 
 # Variables de entorno
 .env
-
+.env.test
 # Python
 __pycache__/
 *.pyc
