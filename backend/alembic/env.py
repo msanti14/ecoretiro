@@ -7,8 +7,10 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 
-from backend.models.user_model import User
 from backend.database import Base
+from backend.models.user_model import User
+from backend.models.request_model import Request  # noqa: F401
+from backend.models.status_history_model import StatusHistory  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

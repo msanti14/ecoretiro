@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import auth_router
+from backend.routers import auth_router, request_router
 
 app = FastAPI(
     title="EcoRetiro API",
@@ -18,6 +18,8 @@ app.add_middleware(
 
 # Routers
 app.include_router(auth_router.router)
+app.include_router(request_router.router)
+app.include_router(request_router.track_router)
 
 @app.get("/")
 async def root() -> dict[str, str]:

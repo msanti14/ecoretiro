@@ -22,5 +22,5 @@ async def login(
 ) -> dict[str, str]:
     # Autentica al usuario y retorna el JWT
     user = user_service.authenticate_user(db, data.email, data.password)
-    token = create_access_token(data={"sub": str(user.id), "role": user.role})
+    token = create_access_token(data={"sub": str(user.id), "role": user.role.value})
     return {"access_token": token, "token_type": "bearer"}
