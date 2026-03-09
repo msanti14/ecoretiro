@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
+from uuid import UUID
 from backend.models.user_model import User
-from backend.schemas.user_schema import UserCreate
+from backend.schemas.user_schema import UserCreate, UserUpdate
 from backend.repositories import user_repository
-from backend.core.security import verify_password
+from backend.core.security import verify_password, hash_password
 from backend.core.exceptions import EcoRetiroExceptions
 
 def create_user(db: Session, data: UserCreate) -> User:
@@ -27,3 +28,33 @@ def get_user_or_404(db: Session, user_id: str) -> User:
     if not user:
         raise EcoRetiroExceptions.USER_NOT_FOUND
     return user
+
+def get_me(db: Session, user_id: UUID) -> User:
+    # Retorna el perfil del usuario autenticado o lanza 404
+    user = user_repository.get_by_id(db, user_id)
+    if not user:
+        raise EcoRetiroExceptions.USER_NOT_FOUND
+    return user
+
+def update_me(db: Session, user_id: UUID, data: UserUpdate) -> User:
+    # Actualiza el perfil del usuario actual
+    # Maneja la validación y hasheado de contraseña
+    user = get_me(db, user_id)
+    
+    # Si se proporciona nueva contraseña, validar actual
+    if data.password:
+        if not verify_password(data.current_password, user.password_hash):
+            raise EcoRetiroExceptions.INVALID_CREDENTIALS
+    
+    # Actualizar campos no-contraseña primero
+    updated_user = user_repository.update_user(db, user_id, data)
+    if not updated_user:
+        raise EcoRetiroExceptions.USER_NOT_FOUND
+    
+    # Si hay nueva contraseña, actualizarla por separado
+    if data.password:
+        updated_user.password_hash = hash_password(data.password)
+        db.commit()
+        db.refresh(updated_user)
+    
+    return updated_user

@@ -1,6 +1,6 @@
 # EcoRetiro — Roadmap y Tareas Pendientes
 
-> Última actualización: Paso 6 (tests) completado ✅
+> Última actualización: Feature 3 (perfil de usuario) completada ✅
 > Stack: FastAPI + SQLAlchemy + PostgreSQL + Alembic
 
 ---
@@ -15,8 +15,8 @@
 | 4. Service   | ✅                | request_service, tracking_service  |
 | 5. Router    | ✅                | /requests + /track                 |
 | 6. Tests     | ✅                | 8/8 passing                        |
-| 7. Migration | ⬜ SIGUIENTE      | Alembic: requests + status_history |
-
+| 7. Migration | ✅                | Alembic: requests + status_history |
+| Feature: Perfil de Usuario  | ✅ | GET /users/me, PATCH /users/me, 5 tests |
 ---
 
 ## Paso 7 — Migración Alembic (SIGUIENTE)
@@ -67,12 +67,14 @@ Endpoints para que OPERATOR/ADMIN gestionen solicitudes.
 ### Feature 3 — Perfil de Usuario
 Endpoints para que USER vea y edite su perfil.
 
-| Paso | Tarea                                         | Responsable |
-|------|-----------------------------------------------|-------------|
-| 1-2  | Ningún modelo nuevo necesario                 | —           |
-| 5    | `GET /users/me`, `PATCH /users/me`            | Cursor      |
-| 6    | Tests de perfil y actualización               | Cursor + vos|
-| 7    | Migración si se agregan campos al User        | Cursor      |
+| Paso | Tarea                                          | Estado |
+|------|------------------------------------------------|--------|
+| 1-2  | Ningún modelo nuevo necesario                  | ✅     |
+| 3    | update_user en user_repository.py              | ✅     |
+| 4    | get_me, update_me en user_service.py           | ✅     |
+| 5    | GET /users/me, PATCH /users/me                 | ✅     |
+| 6    | 5 tests — todos passing                        | ✅     |
+| 7    | Migración no requerida (sin cambios en modelo) | ✅     |
 
 ### Feature 4 — Notificaciones (futuro)
 Avisar al usuario cuando cambia el estado de su solicitud.
@@ -89,8 +91,8 @@ Avisar al usuario cuando cambia el estado de su solicitud.
 
 | Prioridad | Ítem                                                        | Responsable |
 |-----------|-------------------------------------------------------------|-------------|
-| Alta      | `datetime.utcnow()` deprecado → migrar a `datetime.now(UTC)` | Cursor     |
-| Alta      | `class Settings(BaseSettings)` → migrar a `ConfigDict`     | Cursor      |
+| Alta      | `datetime.utcnow()` deprecado → migrar a `datetime.now(UTC)` | Cursor     |✅
+| Alta      | `class Settings(BaseSettings)` → migrar a `ConfigDict`      |Cursor       |✅
 | Media     | Agregar `pytest-cov` y medir cobertura de tests             | Vos         |
 | Media     | Variables de entorno para test (`.env.test`)                | Vos         |
 | Baja      | Fixture `operator_headers()` en conftest para tests de rol  | Claude      |
