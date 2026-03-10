@@ -11,6 +11,7 @@ from backend.database import Base
 from backend.models.user_model import User
 from backend.models.request_model import Request  # noqa: F401
 from backend.models.status_history_model import StatusHistory  # noqa: F401
+from backend.models.notification_model import Notification  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

@@ -4,7 +4,7 @@ Campos, enums y relaciones según ARCHITECTURE.md.
 """
 import uuid
 import enum
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from sqlalchemy import String, Text, Float, Date, Enum as SAEnum, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.database import Base
@@ -88,15 +88,24 @@ class Request(Base):
         ForeignKey("users.id"), nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(
-        default=datetime.utcnow, nullable=False
+        default=lambda: datetime.now(timezone.utc), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+        nullable=False
     )
 
     # Relaciones: usuario que creó la solicitud y operador asignado (si hay).
-    # back_populates en User se puede añadir después si se necesitan las listas.
-    user: Mapped["User"] = relationship("User", foreign_keys=[user_id])
+    user: Mapped["User"] = relationship(
+        "User", foreign_keys=[user_id], back_populates="requests"
+    )
     operator: Mapped["User | None"] = relationship(
-        "User", foreign_keys=[operator_id]
+        "User", foreign_keys=[operator_id], back_populates="operated_requests"
+    )
+    notifications: Mapped[list["Notification"]] = relationship(
+        "Notification", back_populates="request"
+    )
+    status_histories: Mapped[list["StatusHistory"]] = relationship(
+        "StatusHistory", back_populates="request"
     )

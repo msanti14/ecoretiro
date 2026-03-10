@@ -16,6 +16,7 @@ from backend.core.dependencies import get_db
 from backend.models.user_model import User, UserRole              # noqa: F401
 from backend.models.request_model import Request                # noqa: F401
 from backend.models.status_history_model import StatusHistory   # noqa: F401
+from backend.models.notification_model import Notification      # noqa: F401
 
 # ── StaticPool: reutiliza una sola conexión → la DB in-memory no desaparece ──
 engine = create_engine(

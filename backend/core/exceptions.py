@@ -11,6 +11,10 @@ class EcoRetiroExceptions:
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Usuario no encontrado"
     )
+    NOTIFICATION_NOT_FOUND = HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Notificación no encontrada"
+    )
 
     # 400 - Bad request
     INVALID_STATUS_TRANSITION = HTTPException(
