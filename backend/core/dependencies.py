@@ -5,7 +5,7 @@ from uuid import UUID
 from backend.database import SessionLocal
 from backend.core.security import decode_access_token
 from backend.core.exceptions import EcoRetiroExceptions
-from backend.models.user_model import User
+from backend.models.user_model import User, UserRole
 from backend.repositories import user_repository
 
 def get_db() -> Generator[Session, None, None]:
@@ -65,3 +65,12 @@ def get_current_user(
     if not user:
         raise EcoRetiroExceptions.USER_NOT_FOUND
     return user
+
+
+def require_role(*roles: UserRole):
+    """Dependency que exige uno de los roles especificados."""
+    def dependency(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in roles:
+            raise EcoRetiroExceptions.NOT_ENOUGH_PERMISSIONS
+        return current_user
+    return dependency

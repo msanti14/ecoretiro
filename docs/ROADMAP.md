@@ -1,101 +1,101 @@
-# EcoRetiro — Roadmap y Tareas Pendientes
+# EcoRetiro — Roadmap
 
-> Última actualización: Feature 3 (perfil de usuario) completada ✅
+> Última actualización: Feature 4 (notificaciones internas) completada ✅
 > Stack: FastAPI + SQLAlchemy + PostgreSQL + Alembic
+> Tests: 20/20 passing | Cobertura: ~81%
 
 ---
 
-## Estado actual
+## Estado actual del backend
 
-| Capa         | Feature: Requests | Notas                              |
-|--------------|-------------------|------------------------------------|
-| 1. Model     | ✅                | Request, StatusHistory, User       |
-| 2. Schema    | ✅                | RequestCreate, RequestRead, etc.   |
-| 3. Repository| ✅                | create_with_history, tracking      |
-| 4. Service   | ✅                | request_service, tracking_service  |
-| 5. Router    | ✅                | /requests + /track                 |
-| 6. Tests     | ✅                | 8/8 passing                        |
-| 7. Migration | ✅                | Alembic: requests + status_history |
-| Feature: Perfil de Usuario  | ✅ | GET /users/me, PATCH /users/me, 5 tests |
+| Feature                          | Estado | Tests  | Notas                                      |
+|----------------------------------|--------|--------|--------------------------------------------|
+| Auth                             | ✅     | 4/4    | Registro, login, JWT                       |
+| Feature 1 — Requests             | ✅     | 6/6    | 7 pasos completos + migración              |
+| Feature 2 — Panel Operador       | ✅     | 2/2    | GET /requests, PATCH status, fixture op    |
+| Feature 3 — Perfil de usuario    | ✅     | 5/5    | GET /users/me, PATCH /users/me             |
+| Feature 4 — Notificaciones       | ✅     | 5/5    | CRUD interno, sin emails externos          |
+| Deuda técnica Alta               | ✅     | —      | datetime.now(UTC), ConfigDict              |
+| Deuda técnica Media              | ✅     | —      | pytest-cov, .env.test                      |
+| Deuda técnica Baja               | ✅     | —      | operator_token fixture en conftest.py      |
+
 ---
 
-## Paso 7 — Migración Alembic (SIGUIENTE)
+## Etapas del proyecto
 
-### 🧑 Vos (estudiante)
-- [ ] Verificar que Alembic esté instalado: `alembic --version`
-- [ ] Verificar que `alembic/env.py` importe `Base` desde `backend.database`
-- [ ] Revisar el archivo generado en `alembic/versions/` antes de aplicar
-- [ ] Correr `alembic upgrade head` contra la DB de desarrollo
-- [ ] Verificar en psql/DBeaver que las tablas `requests` y `status_history` existan
-
-### 🤖 Cursor
-- [ ] Generar la migración con `alembic revision --autogenerate -m "agrega tabla requests y status_history"`
-- [ ] Verificar que incluya índice en `tracking_number`
-- [ ] Verificar que el `downgrade()` sea reversible
-
-### 🟣 Claude (yo)
-- [ ] Revisar el archivo de migración generado si hay dudas
-- [ ] Debuggear errores de Alembic si aparecen
-
-**Prompt listo para Cursor:**
 ```
-I added the requests feature (Request model + StatusHistory model).
-Generate the correct Alembic migration and verify:
-- The migration matches the model change exactly
-- No existing data will be lost
-- Required indexes are included (tracking_number)
-- The migration is reversible (downgrade works)
+[1] Backend (FastAPI)        ← estamos acá
+[2] Integración notificaciones
+[3] Frontend (HTML/CSS/JS)
+[4] Integración frontend-backend
+[5] Deploy
 ```
 
 ---
 
-## Features pendientes (orden sugerido)
+## Backend — Features pendientes
 
-Siguiendo el workflow: model → schema → repository → service → router → tests → migration
+### Feature 5 — Dashboard / Estadísticas (ADMIN)
+Endpoints para que ADMIN vea métricas del sistema.
 
-### Feature 2 — Panel de Operador
-Endpoints para que OPERATOR/ADMIN gestionen solicitudes.
+| Paso | Tarea                                                        | Responsable |
+|------|--------------------------------------------------------------|-------------|
+| 1    | Sin modelo nuevo (usa Request, User, Notification existentes)| —           |
+| 2    | Schema `DashboardStats` (totales, por estado, por operador)  | Cursor      |
+| 3    | Repository: queries de agregación                            | Cursor      |
+| 4    | Service: `get_stats(db)`                                     | Cursor      |
+| 5    | `GET /admin/stats` — solo ADMIN                              | Cursor      |
+| 6    | Tests con StaticPool                                         | Cursor + vos|
+| 7    | Sin migración (sin modelo nuevo)                             | —           |
 
-| Paso | Tarea                                         | Responsable |
-|------|-----------------------------------------------|-------------|
-| 5    | `GET /requests` (listar todas, solo OPERATOR) | Cursor      |
-| 5    | `PATCH /requests/{id}/status` ya existe ✅    | —           |
-| 5    | `GET /requests/{id}` ya existe ✅             | —           |
-| 6    | Tests con usuario OPERATOR en conftest        | Cursor + vos|
-| —    | Fixture `operator_headers()` en conftest.py   | Claude      |
-
-### Feature 3 — Perfil de Usuario
-Endpoints para que USER vea y edite su perfil.
-
-| Paso | Tarea                                          | Estado |
-|------|------------------------------------------------|--------|
-| 1-2  | Ningún modelo nuevo necesario                  | ✅     |
-| 3    | update_user en user_repository.py              | ✅     |
-| 4    | get_me, update_me en user_service.py           | ✅     |
-| 5    | GET /users/me, PATCH /users/me                 | ✅     |
-| 6    | 5 tests — todos passing                        | ✅     |
-| 7    | Migración no requerida (sin cambios en modelo) | ✅     |
-
-### Feature 4 — Notificaciones (futuro)
-Avisar al usuario cuando cambia el estado de su solicitud.
-
-| Paso | Tarea                                         | Responsable |
-|------|-----------------------------------------------|-------------|
-| 1    | Model `Notification`                          | Cursor      |
-| 3    | Repository + lógica de envío                  | Cursor      |
-| 7    | Migración tabla notifications                 | Cursor      |
+**Prompt para Cursor:**
+```
+Following the workflow in docs/ai/ai_workflow.md, implement Feature 5 — Admin Dashboard.
+Read docs/ai/ai_architecture.md for conventions.
+No new model needed — use existing Request, User, Notification models.
+Start with Step 2 — Schema DashboardStats in backend/schemas/dashboard_schema.py.
+Include: total_requests, requests_by_status (dict), total_users, total_notifications_unread.
+Wait for my approval before moving to the next layer.
+```
 
 ---
 
-## Deuda técnica / mejoras pendientes
+### Integración de notificaciones en features existentes
 
-| Prioridad | Ítem                                                        | Responsable |
-|-----------|-------------------------------------------------------------|-------------|
-| Alta      | `datetime.utcnow()` deprecado → migrar a `datetime.now(UTC)` | Cursor     |✅
-| Alta      | `class Settings(BaseSettings)` → migrar a `ConfigDict`      |Cursor       |✅
-| Media     | Agregar `pytest-cov` y medir cobertura de tests             | Vos         |
-| Media     | Variables de entorno para test (`.env.test`)                | Vos         |
-| Baja      | Fixture `operator_headers()` en conftest para tests de rol  | Claude      |
+Disparar `notification_repository.create()` automáticamente cuando ocurran estos eventos:
+
+| Evento                              | Mensaje sugerido                                      | Dónde agregar              |
+|-------------------------------------|-------------------------------------------------------|----------------------------|
+| Usuario crea una solicitud          | "Tu solicitud {tracking} fue recibida."               | `request_service.create()` |
+| Operador cambia estado de solicitud | "Tu solicitud {tracking} cambió a {estado}."          | `request_service.update_status()` |
+| Operador se asigna a una solicitud  | "Un operador fue asignado a tu solicitud {tracking}." | `request_service.assign_operator()` |
+
+> ⚠️ Hacer esto **después de Feature 5** para no mezclar cambios.
+
+---
+
+## Deuda técnica pendiente
+
+| Prioridad | Ítem                                                              | Estado |
+|-----------|-------------------------------------------------------------------|--------|
+| Media     | Cobertura actual ~81% — identificar gaps y agregar tests faltantes| 🔲     |
+| Baja      | Revisar si `back_populates` en todos los modelos está completo    | ✅ hecho en Feature 4 |
+
+---
+
+## Frontend (próxima etapa)
+
+A encarar cuando el backend esté 100% funcional y testeado.
+
+| Pantalla                  | Rol        | Notas                        |
+|---------------------------|------------|------------------------------|
+| Login / Registro          | Todos      |                              |
+| Panel de usuario          | USER       | Requests + notificaciones    |
+| Crear solicitud           | USER       |                              |
+| Seguimiento de solicitud  | USER       | Por tracking number          |
+| Panel de operador         | OPERATOR   | Lista + cambio de estado     |
+| Dashboard estadísticas    | ADMIN      | Feature 5                    |
+| Perfil de usuario         | USER       |                              |
 
 ---
 
@@ -105,31 +105,8 @@ Avisar al usuario cuando cambia el estado de su solicitud.
 - **Services:** lógica de negocio. Nunca HTTP/status_code acá.
 - **Repositories:** solo acceso a DB. Nada de reglas de negocio.
 - **Excepciones:** siempre desde `core/exceptions.py`. Nunca inline.
-- **Auth:** `get_current_user_id` para USER, `require_operator_or_admin` para OPERATOR/ADMIN.
+- **Auth:** `get_current_user` para USER, `require_role("OPERATOR")` o `require_role("ADMIN")` para roles elevados.
 - **Tests:** siempre con `StaticPool` + importar modelos antes de `create_all`.
-
----
-
-## Prompts de referencia rápida para Cursor
-
-**Nueva feature:**
-```
-Following the workflow in ai_workflow.md, implement [feature].
-Show me one layer at a time. Wait for my approval before moving to the next.
-Reference ai_architecture.md for conventions.
-```
-
-**Debuggear error:**
-```
-This endpoint is failing: [método] [ruta]
-Error: [mensaje]
-Check against ai_architecture.md. Identify which layer has the problem.
-Fix only that layer.
-```
-
-**Agregar validación:**
-```
-Add validation to [schema] for [campo]: [reglas].
-Validation must be in the Pydantic schema only.
-Add a test for the 422 failure case.
-```
+- **Schemas:** `ConfigDict(from_attributes=True)`, nunca exponer `password_hash`.
+- **Nombres:** `user_schema.py`, `request_repository.py`, `notification_service.py`, etc.
+- **datetime:** siempre `datetime.now(timezone.utc)`, nunca `datetime.utcnow()`.
