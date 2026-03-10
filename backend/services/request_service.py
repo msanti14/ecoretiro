@@ -6,7 +6,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from backend.models.request_model import Request
+from backend.models.request_model import Request, RequestStatus
 from backend.schemas.request_schema import (
     RequestCreate,
     RequestUpdate,
@@ -18,11 +18,37 @@ from backend.services.tracking_service import validate_transition
 from backend.core.exceptions import EcoRetiroExceptions
 
 
+# Mapper de estados a español para notificaciones
+STATUS_MESSAGES = {
+    RequestStatus.REQUESTED: "solicitada",
+    RequestStatus.SCHEDULED: "agendada",
+    RequestStatus.IN_ROUTE: "en camino",
+    RequestStatus.COLLECTED: "recolectada",
+    RequestStatus.CLASSIFIED: "clasificada",
+    RequestStatus.RECOVERED: "recuperada",
+    RequestStatus.SENT_TO_RECYCLING: "enviada a reciclaje",
+    RequestStatus.COMPLETED: "completada",
+}
+
+
 def create_request(
     db: Session, data: RequestCreate, user_id: UUID
 ) -> Request:
     """Crea una solicitud (transacción atómica: request + history + vehículo)."""
-    return request_repository.create_with_history(db, data, user_id)
+    from backend.repositories import notification_repository
+    
+    # Crear solicitud
+    request = request_repository.create_with_history(db, data, user_id)
+    
+    # Notificar al usuario
+    notification_repository.create(
+        db,
+        user_id=user_id,
+        message=f"Tu solicitud {request.tracking_number} fue recibida.",
+        request_id=request.id
+    )
+    
+    return request
 
 
 def get_request_or_404(db: Session, request_id: UUID) -> Request:
@@ -74,7 +100,10 @@ def update_status(
     Valida transición con ALLOWED_TRANSITIONS; transacción atómica
     (actualiza request + inserta StatusHistory).
     """
+    from backend.repositories import notification_repository
+    
     request = get_request_or_404(db, request_id)
+    
     if data.current_status is not None:
         validate_transition(request.current_status, data.current_status)
         updated = request_repository.update_status_with_history(
@@ -88,7 +117,18 @@ def update_status(
         )
         if not updated:
             raise EcoRetiroExceptions.REQUEST_NOT_FOUND
+        
+        # Notificar al usuario del cambio de estado
+        status_text = STATUS_MESSAGES.get(data.current_status, data.current_status.value)
+        notification_repository.create(
+            db,
+            user_id=updated.user_id,
+            message=f"Tu solicitud {updated.tracking_number} cambió a {status_text}.",
+            request_id=updated.id
+        )
+        
         return updated
+    
     # Solo actualización de vehicle_assigned u operator_id (sin cambio de estado)
     if data.vehicle_assigned is not None:
         request.vehicle_assigned = data.vehicle_assigned

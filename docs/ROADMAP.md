@@ -1,8 +1,8 @@
 # EcoRetiro — Roadmap
 
-> Última actualización: Feature 4 (notificaciones internas) completada ✅
+> Última actualización: Integración de notificaciones automáticas completada ✅
 > Stack: FastAPI + SQLAlchemy + PostgreSQL + Alembic
-> Tests: 20/20 passing | Cobertura: ~81%
+> Tests: 26/26 passing | Cobertura: ~85%
 
 ---
 
@@ -15,6 +15,8 @@
 | Feature 2 — Panel Operador       | ✅     | 2/2    | GET /requests, PATCH status, fixture op    |
 | Feature 3 — Perfil de usuario    | ✅     | 5/5    | GET /users/me, PATCH /users/me             |
 | Feature 4 — Notificaciones       | ✅     | 5/5    | CRUD interno, sin emails externos          |
+| Feature 5 — Dashboard Admin      | ✅     | 3/3    | Estadísticas y métricas del sistema        |
+| **Integración notificaciones**   | ✅     | 3/3    | Auto-notifica en create + update_status    |
 | Deuda técnica Alta               | ✅     | —      | datetime.now(UTC), ConfigDict              |
 | Deuda técnica Media              | ✅     | —      | pytest-cov, .env.test                      |
 | Deuda técnica Baja               | ✅     | —      | operator_token fixture en conftest.py      |
@@ -24,53 +26,45 @@
 ## Etapas del proyecto
 
 ```
-[1] Backend (FastAPI)        ← estamos acá
-[2] Integración notificaciones
-[3] Frontend (HTML/CSS/JS)
-[4] Integración frontend-backend
-[5] Deploy
+[1] Backend (FastAPI)        ← ✅ COMPLETADO
+[2] Frontend (HTML/CSS/JS)   ← siguiente
+[3] Integración frontend-backend
+[4] Deploy
 ```
 
 ---
 
-## Backend — Features pendientes
+## Backend — Completado ✅
 
-### Feature 5 — Dashboard / Estadísticas (ADMIN)
+### Feature 5 — Dashboard / Estadísticas (ADMIN) ✅
 Endpoints para que ADMIN vea métricas del sistema.
 
-| Paso | Tarea                                                        | Responsable |
-|------|--------------------------------------------------------------|-------------|
-| 1    | Sin modelo nuevo (usa Request, User, Notification existentes)| —           |
-| 2    | Schema `DashboardStats` (totales, por estado, por operador)  | Cursor      |
-| 3    | Repository: queries de agregación                            | Cursor      |
-| 4    | Service: `get_stats(db)`                                     | Cursor      |
-| 5    | `GET /admin/stats` — solo ADMIN                              | Cursor      |
-| 6    | Tests con StaticPool                                         | Cursor + vos|
-| 7    | Sin migración (sin modelo nuevo)                             | —           |
-
-**Prompt para Cursor:**
-```
-Following the workflow in docs/ai/ai_workflow.md, implement Feature 5 — Admin Dashboard.
-Read docs/ai/ai_architecture.md for conventions.
-No new model needed — use existing Request, User, Notification models.
-Start with Step 2 — Schema DashboardStats in backend/schemas/dashboard_schema.py.
-Include: total_requests, requests_by_status (dict), total_users, total_notifications_unread.
-Wait for my approval before moving to the next layer.
-```
+| Paso | Tarea                                                        | Estado |
+|------|--------------------------------------------------------------|--------|
+| 1    | Sin modelo nuevo (usa Request, User, Notification existentes)| ✅     |
+| 2    | Schema `DashboardStats` (totales, por estado, por operador)  | ✅     |
+| 3    | Repository: queries de agregación                            | ✅     |
+| 4    | Service: `get_stats(db)`                                     | ✅     |
+| 5    | `GET /admin/stats` — solo ADMIN                              | ✅     |
+| 6    | Tests con StaticPool                                         | ✅     |
+| 7    | Sin migración (sin modelo nuevo)                             | ✅     |
 
 ---
 
-### Integración de notificaciones en features existentes
+### Integración de notificaciones automáticas ✅
 
-Disparar `notification_repository.create()` automáticamente cuando ocurran estos eventos:
+Notificaciones disparadas automáticamente cuando ocurren estos eventos:
 
-| Evento                              | Mensaje sugerido                                      | Dónde agregar              |
-|-------------------------------------|-------------------------------------------------------|----------------------------|
-| Usuario crea una solicitud          | "Tu solicitud {tracking} fue recibida."               | `request_service.create()` |
-| Operador cambia estado de solicitud | "Tu solicitud {tracking} cambió a {estado}."          | `request_service.update_status()` |
-| Operador se asigna a una solicitud  | "Un operador fue asignado a tu solicitud {tracking}." | `request_service.assign_operator()` |
+| Evento                              | Mensaje                                           | Ubicación                     | Estado |
+|-------------------------------------|---------------------------------------------------|-------------------------------|--------|
+| Usuario crea una solicitud          | "Tu solicitud {tracking} fue recibida."           | `request_service.create()`    | ✅     |
+| Operador cambia estado de solicitud | "Tu solicitud {tracking} cambió a {estado}."      | `request_service.update_status()` | ✅ |
 
-> ⚠️ Hacer esto **después de Feature 5** para no mezclar cambios.
+**Implementación:**
+- ✅ Mapper `STATUS_MESSAGES` con traducciones al español
+- ✅ Import local de `notification_repository` en service
+- ✅ 3 tests de integración agregados
+- ✅ Solo notifica en cambios de estado (no en asignaciones de vehículo/operador)
 
 ---
 
@@ -78,14 +72,14 @@ Disparar `notification_repository.create()` automáticamente cuando ocurran esto
 
 | Prioridad | Ítem                                                              | Estado |
 |-----------|-------------------------------------------------------------------|--------|
-| Media     | Cobertura actual ~81% — identificar gaps y agregar tests faltantes| 🔲     |
-| Baja      | Revisar si `back_populates` en todos los modelos está completo    | ✅ hecho en Feature 4 |
+| Media     | Cobertura actual ~85% — identificar gaps y agregar tests faltantes| 🔲     |
+| Baja      | Revisar si `back_populates` en todos los modelos está completo    | ✅     |
 
 ---
 
 ## Frontend (próxima etapa)
 
-A encarar cuando el backend esté 100% funcional y testeado.
+A encarar ahora que el backend está 100% funcional y testeado.
 
 | Pantalla                  | Rol        | Notas                        |
 |---------------------------|------------|------------------------------|
