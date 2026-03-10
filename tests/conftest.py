@@ -63,6 +63,22 @@ def register_and_login(client: TestClient, email: str = "test@eco.com") -> str:
     return resp.json()["access_token"]
 
 
+@pytest.fixture
+def admin_token(client: TestClient) -> str:
+    """Registra un usuario, actualiza su rol a ADMIN en DB y devuelve el token."""
+    email = "admin@eco.com"
+    client.post(REGISTER_URL, json={**USER_DATA, "email": email})
+    db = TestingSessionLocal()
+    try:
+        user = db.query(User).filter(User.email == email).first()
+        user.role = UserRole.ADMIN
+        db.commit()
+    finally:
+        db.close()
+    resp = client.post(LOGIN_URL, json={"email": email, "password": USER_DATA["password"]})
+    return resp.json()["access_token"]
+
+
 def auth_headers(token: str) -> dict:
     return {"Authorization": f"Bearer {token}"}
 
