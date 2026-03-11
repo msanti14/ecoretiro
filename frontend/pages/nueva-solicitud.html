@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Nueva Solicitud</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-centered layout-padded">
+
+    <div class="container container-md">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-green">
+                <div class="window-title">📝 EcoRetiro.exe/Home/NuevoRetiro</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content window-content-scroll">
+                <div class="header header-centered">
+                    <div class="logo-retro green">Nueva Solicitud</div>
+                    <p class="tagline">Solicitá el retiro de tus residuos electrónicos</p>
+                </div>
+
+                <form id="newRequestForm">
+                    <div class="form-section">
+                        <div class="section-title">📍 Datos de Retiro</div>
+
+                        <div class="form-group">
+                            <label>Dirección <span class="required">*</span></label>
+                            <input type="text" placeholder="Ej: Av. Corrientes 1234, CABA">
+                            <div class="help-text">Dirección completa donde retiraremos el material</div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha de Retiro <span class="required">*</span></label>
+                                <input type="date">
+                            </div>
+                            <div class="form-group">
+                                <label>Horario <span class="required">*</span></label>
+                                <select>
+                                    <option>Seleccionar...</option>
+                                    <option>Mañana (9-13hs)</option>
+                                    <option>Tarde (13-18hs)</option>
+                                    <option>Noche (18-21hs)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-title">🖥️ Información del Material</div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipo de Material <span class="required">*</span></label>
+                                <select>
+                                    <option>Seleccionar...</option>
+                                    <option>Computadora</option>
+                                    <option>Monitor</option>
+                                    <option>Televisor</option>
+                                    <option>Impresora</option>
+                                    <option>Celular</option>
+                                    <option>Tablet</option>
+                                    <option>Electrodoméstico</option>
+                                    <option>Cable</option>
+                                    <option>Placa de Circuito</option>
+                                    <option>Pila/Batería</option>
+                                    <option>Otro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Volumen Estimado <span class="required">*</span></label>
+                                <select>
+                                    <option>Seleccionar...</option>
+                                    <option>Pequeño (caja chica)</option>
+                                    <option>Mediano (caja grande)</option>
+                                    <option>Grande (varios items)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción <span class="required">*</span></label>
+                            <textarea placeholder="Describí el estado y cantidad de materiales..."></textarea>
+                            <div class="help-text">Mínimo 10 caracteres</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-retro btn-green">Solicitar Retiro</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/window-system.js"></script>
+</body>
+</html>

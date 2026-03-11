@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Seguimiento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-centered layout-padded">
+
+    <div class="container container-md">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-cyan">
+                <div class="window-title">📦 EcoRetiro.exe/Seguimiento</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content">
+                <div class="header header-centered">
+                    <div class="logo-retro">Seguimiento</div>
+                    <p class="tagline">Rastreá tu solicitud en tiempo real</p>
+                </div>
+
+                <div class="tracking-input-section">
+                    <div class="input-group">
+                        <input type="text" placeholder="ECO-USHUAIA-2026-0042" value="ECO-USHUAIA-2026-0042">
+                        <button class="btn-track">BUSCAR</button>
+                    </div>
+                </div>
+
+                <div class="result-panel">
+                    <div class="tracking-code">ECO-USHUAIA-2026-0042</div>
+                    <div class="text-center">
+                        <span class="status-badge">✓ EN CAMINO</span>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Tipo de Material</div>
+                            <div class="info-value">Computadora</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Fecha de Retiro</div>
+                            <div class="info-value">15/03/2026</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Horario</div>
+                            <div class="info-value">Mañana (9-13hs)</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Vehículo</div>
+                            <div class="info-value">DUCATO</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-title">Historial de Estados</div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon active">✓</div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">En Camino</div>
+                                <div class="timeline-date">10/03/2026 - 14:32hs</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">Agendada</div>
+                                <div class="timeline-date">09/03/2026 - 10:15hs</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">Solicitada</div>
+                                <div class="timeline-date">08/03/2026 - 16:45hs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra de estado -->
+            <div class="window-statusbar">
+                <span>Última actualización: Hoy 14:32hs</span>
+                <span>v2.6.1</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/window-system.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Dashboard Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-padded">
+
+    <div class="container container-lg">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-magenta">
+                <div class="window-title">👑 EcoRetiro.exe/Admin/Dashboard</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content window-content-scroll">
+                <div class="header header-flex">
+                    <div>
+                        <div class="welcome">Dashboard Admin 👑</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">🛡️</div>
+                        <div>
+                            <div class="user-name">Admin</div>
+                            <div class="user-email">admin@eco.com</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">Solicitudes Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✓</div>
+                        <div class="stat-value">32</div>
+                        <div class="stat-label">Completadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-value">11</div>
+                        <div class="stat-label">En Proceso</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Canceladas</div>
+                    </div>
+                </div>
+
+                <!-- Solicitudes por operador -->
+                <div class="section-title">👷 Solicitudes por Operador</div>
+
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Operador</th>
+                            <th>Asignadas</th>
+                            <th>Completadas</th>
+                            <th>En Proceso</th>
+                            <th>Canceladas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Carlos Méndez</strong></td>
+                            <td>18</td>
+                            <td>14</td>
+                            <td>3</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Laura Gómez</strong></td>
+                            <td>15</td>
+                            <td>10</td>
+                            <td>4</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Martín Ruiz</strong></td>
+                            <td>14</td>
+                            <td>8</td>
+                            <td>4</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="separator"><span>⬇</span></div>
+
+                <!-- Actividad Reciente -->
+                <div class="section-title">🕐 Actividad Reciente</div>
+
+                <div class="result-panel">
+                    <ul class="activity-feed">
+                        <li class="activity-item">
+                            <div class="activity-icon">🚚</div>
+                            <div class="activity-text">
+                                <strong>Carlos Méndez</strong> cambió ECO-USH-2026-0042 a <strong>EN CAMINO</strong>
+                            </div>
+                            <div class="activity-time">Hace 12 min</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">✓</div>
+                            <div class="activity-text">
+                                <strong>Laura Gómez</strong> completó ECO-USH-2026-0037
+                            </div>
+                            <div class="activity-time">Hace 45 min</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">📋</div>
+                            <div class="activity-text">
+                                Nueva solicitud <strong>ECO-USH-2026-0048</strong> creada por usuario Santiago
+                            </div>
+                            <div class="activity-time">Hace 1h</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">📅</div>
+                            <div class="activity-text">
+                                <strong>Martín Ruiz</strong> agendó ECO-USH-2026-0046 para 14/03/2026
+                            </div>
+                            <div class="activity-time">Hace 2h</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">❌</div>
+                            <div class="activity-text">
+                                <strong>Laura Gómez</strong> canceló ECO-USH-2026-0044 — motivo: dirección inválida
+                            </div>
+                            <div class="activity-time">Hace 3h</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Barra de estado -->
+            <div class="window-statusbar">
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <span>Panel administrador</span>
+                </div>
+                <div class="status-item">
+                    <span>v2.6.1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/window-system.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Panel Operador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-padded">
+
+    <div class="container container-lg">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-yellow">
+                <div class="window-title">⚙️ EcoRetiro.exe/Operador</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content window-content-scroll">
+                <div class="header header-flex">
+                    <div>
+                        <div class="welcome">Panel Operador 🔧</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">⚙️</div>
+                        <div>
+                            <div class="user-name">Carlos (Operador)</div>
+                            <div class="user-email">operador@eco.com</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats rápidos -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Pendientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚚</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">En Camino</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✓</div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Completadas Hoy</div>
+                    </div>
+                </div>
+
+                <!-- Filtro -->
+                <div class="filter-bar">
+                    <label>Filtrar por estado:</label>
+                    <select>
+                        <option>Todos</option>
+                        <option>Solicitada</option>
+                        <option>Agendada</option>
+                        <option>En Camino</option>
+                        <option>Completada</option>
+                        <option>Cancelada</option>
+                    </select>
+                </div>
+
+                <!-- Tabla de solicitudes -->
+                <div class="section-title">📦 Solicitudes Asignadas</div>
+
+                <table class="retro-table">
+                    <thead>
+                        <tr>
+                            <th>Tracking</th>
+                            <th>Material</th>
+                            <th>Dirección</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Cambiar Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="request-tracking">ECO-USH-2026-0042</td>
+                            <td>Computadora</td>
+                            <td>Av. Maipú 505</td>
+                            <td>15/03/2026</td>
+                            <td><span class="request-status">EN CAMINO</span></td>
+                            <td>
+                                <select class="status-select">
+                                    <option>Solicitada</option>
+                                    <option>Agendada</option>
+                                    <option selected>En Camino</option>
+                                    <option>Completada</option>
+                                    <option>Cancelada</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="request-tracking">ECO-USH-2026-0041</td>
+                            <td>Monitor</td>
+                            <td>San Martín 1200</td>
+                            <td>14/03/2026</td>
+                            <td><span class="request-status scheduled">AGENDADA</span></td>
+                            <td>
+                                <select class="status-select">
+                                    <option>Solicitada</option>
+                                    <option selected>Agendada</option>
+                                    <option>En Camino</option>
+                                    <option>Completada</option>
+                                    <option>Cancelada</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="request-tracking">ECO-USH-2026-0040</td>
+                            <td>Impresora</td>
+                            <td>Gobernador Paz 340</td>
+                            <td>13/03/2026</td>
+                            <td><span class="request-status">SOLICITADA</span></td>
+                            <td>
+                                <select class="status-select">
+                                    <option selected>Solicitada</option>
+                                    <option>Agendada</option>
+                                    <option>En Camino</option>
+                                    <option>Completada</option>
+                                    <option>Cancelada</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="request-tracking">ECO-USH-2026-0038</td>
+                            <td>Celular</td>
+                            <td>Deloqui 880</td>
+                            <td>12/03/2026</td>
+                            <td><span class="request-status completed">COMPLETADA</span></td>
+                            <td>
+                                <select class="status-select">
+                                    <option>Solicitada</option>
+                                    <option>Agendada</option>
+                                    <option>En Camino</option>
+                                    <option selected>Completada</option>
+                                    <option>Cancelada</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="request-tracking">ECO-USH-2026-0035</td>
+                            <td>Televisor</td>
+                            <td>Yaganes 72</td>
+                            <td>11/03/2026</td>
+                            <td><span class="request-status scheduled">AGENDADA</span></td>
+                            <td>
+                                <select class="status-select">
+                                    <option>Solicitada</option>
+                                    <option selected>Agendada</option>
+                                    <option>En Camino</option>
+                                    <option>Completada</option>
+                                    <option>Cancelada</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Barra de estado -->
+            <div class="window-statusbar">
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <span>Operador activo</span>
+                </div>
+                <div class="status-item">
+                    <span>v2.6.1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/window-system.js"></script>
+</body>
+</html>

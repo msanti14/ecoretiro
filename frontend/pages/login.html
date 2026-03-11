@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Acceso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-centered overflow-hidden">
+
+    <!-- Ondas decorativas -->
+    <div class="wave-decoration top">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C300,80 600,80 900,0 L1200,0 L1200,120 L0,120 Z"
+                  fill="rgba(255, 0, 110, 0.1)" />
+            <path d="M0,20 C400,100 800,100 1200,20 L1200,120 L0,120 Z"
+                  fill="rgba(0, 245, 255, 0.1)" />
+        </svg>
+    </div>
+
+    <div class="wave-decoration bottom">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C300,80 600,80 900,0 L1200,0 L1200,120 L0,120 Z"
+                  fill="rgba(131, 56, 236, 0.1)" />
+        </svg>
+    </div>
+
+    <!-- Iconos flotantes -->
+    <div class="floating-icon">♻️</div>
+    <div class="floating-icon">📱</div>
+    <div class="floating-icon">🖥️</div>
+
+    <div class="container container-sm">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-magenta">
+                <div class="window-title">♻️ EcoRetiro.exe/Login</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content">
+                <div class="sticker top-right">🌱</div>
+                <div class="sticker bottom-left">⚡</div>
+
+                <div class="header header-centered">
+                    <div class="logo-retro">EcoRetiro</div>
+                    <p class="tagline">Sistema de Reciclaje Electrónico</p>
+                </div>
+
+                <div class="info-panel">
+                    <div class="info-panel-title">¿Buscás rastrear tu pedido?</div>
+                    <div class="info-panel-text">
+                        Ingresá tu código de tracking (ECO-XXX-XXXX) sin necesidad de login
+                    </div>
+                </div>
+
+                <!-- Mensaje de error inline -->
+                <div id="errorMsg" class="error-msg" style="display:none;"></div>
+
+                <!-- ========== LOGIN FORM ========== -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="usuario@ejemplo.com" autocomplete="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+                    </div>
+
+                    <button type="submit" class="btn-retro" id="loginBtn">Ingresar</button>
+                </form>
+
+                <!-- ========== REGISTER FORM ========== -->
+                <form id="registerForm" style="display:none;">
+                    <div class="form-group">
+                        <label for="regName">Nombre</label>
+                        <input type="text" id="regName" placeholder="Tu nombre completo" autocomplete="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" placeholder="usuario@ejemplo.com" autocomplete="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPhone">Teléfono (opcional)</label>
+                        <input type="tel" id="regPhone" placeholder="1155667788" autocomplete="tel">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPassword">Contraseña</label>
+                        <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres y un número" autocomplete="new-password" required>
+                    </div>
+
+                    <button type="submit" class="btn-retro" id="registerBtn">Crear cuenta</button>
+                </form>
+
+                <div class="separator">
+                    <span>O</span>
+                </div>
+
+                <div class="links-section">
+                    <div class="link-item" id="toggleAuth">
+                        ¿No tenés cuenta? <a href="#">Registrate gratis</a>
+                    </div>
+                    <div class="link-item">
+                        <a href="tracking.html">Rastrear mi pedido</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra de estado -->
+            <div class="window-statusbar">
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <span>Conectado</span>
+                </div>
+                <div class="status-item">
+                    <span>v2.6.1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/window-system.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      var loginForm = document.getElementById('loginForm');
+      var registerForm = document.getElementById('registerForm');
+      var toggleAuth = document.getElementById('toggleAuth');
+      var errorMsg = document.getElementById('errorMsg');
+      var isLogin = true;
+
+      // Toggle login ↔ registro
+      toggleAuth.addEventListener('click', function (e) {
+        e.preventDefault();
+        isLogin = !isLogin;
+        hideError();
+
+        if (isLogin) {
+          loginForm.style.display = '';
+          registerForm.style.display = 'none';
+          toggleAuth.innerHTML = '¿No tenés cuenta? <a href="#">Registrate gratis</a>';
+        } else {
+          loginForm.style.display = 'none';
+          registerForm.style.display = '';
+          toggleAuth.innerHTML = '¿Ya tenés cuenta? <a href="#">Iniciá sesión</a>';
+        }
+      });
+
+      // Login
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideError();
+        var email = document.getElementById('loginEmail').value.trim();
+        var password = document.getElementById('loginPassword').value;
+        var btn = document.getElementById('loginBtn');
+
+        btn.disabled = true;
+        btn.textContent = 'Ingresando...';
+
+        EcoRetiroAPI.login(email, password)
+          .then(function () {
+            window.location.href = 'home.html';
+          })
+          .catch(function (err) {
+            showError(err.message);
+            btn.disabled = false;
+            btn.textContent = 'Ingresar';
+          });
+      });
+
+      // Registro
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideError();
+        var name = document.getElementById('regName').value.trim();
+        var email = document.getElementById('regEmail').value.trim();
+        var phone = document.getElementById('regPhone').value.trim() || null;
+        var password = document.getElementById('regPassword').value;
+        var btn = document.getElementById('registerBtn');
+
+        btn.disabled = true;
+        btn.textContent = 'Creando cuenta...';
+
+        EcoRetiroAPI.register(name, email, password, phone)
+          .then(function () {
+            window.location.href = 'home.html';
+          })
+          .catch(function (err) {
+            showError(err.message);
+            btn.disabled = false;
+            btn.textContent = 'Crear cuenta';
+          });
+      });
+
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.style.display = '';
+      }
+
+      function hideError() {
+        errorMsg.textContent = '';
+        errorMsg.style.display = 'none';
+      }
+    })();
+    </script>
+</body>
+</html>

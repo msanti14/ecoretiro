@@ -1,10 +1,11 @@
 # docs/ai/ai_workflow.md — Flujo de Desarrollo
 
-> Última actualización: Feature 4 completada. Stack real: SQLAlchemy 2.0 con `Mapped`.
+> Última actualización: Integración frontend-backend iniciada. Etapas 1-2 completadas.
+> Stack real: SQLAlchemy 2.0 con `Mapped`.
 
 ---
 
-## Orden de implementación por capa
+## Orden de implementación backend
 
 Para cada feature nueva, implementar siempre en este orden:
 
@@ -14,6 +15,14 @@ Para cada feature nueva, implementar siempre en este orden:
 
 Si la feature no requiere modelo nuevo, empezar desde el paso 2.
 Si la feature no requiere migración, omitir el paso 7.
+
+## Orden de integración frontend
+
+Para cada página, integrar siempre en este orden:
+
+```
+1. Auth guard → 2. Fetch datos → 3. Render → 4. Manejo de errores → 5. Loading state
+```
 
 ---
 
@@ -41,7 +50,6 @@ class Notification(Base):
         default=lambda: datetime.now(timezone.utc), nullable=False
     )
 
-    # Relaciones bidireccionales con back_populates
     user: Mapped["User"] = relationship("User", foreign_keys=[user_id], back_populates="notifications")
     request: Mapped["Request | None"] = relationship("Request", foreign_keys=[request_id], back_populates="notifications")
 ```
@@ -88,11 +96,6 @@ Solo acceso a DB. Sin lógica de negocio, sin HTTP.
 
 ```python
 # backend/repositories/notification_repository.py
-from uuid import UUID
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-from backend.models.notification_model import Notification
-
 def get_by_user(db: Session, user_id: UUID) -> list[Notification]:
     stmt = (
         select(Notification)
@@ -100,19 +103,6 @@ def get_by_user(db: Session, user_id: UUID) -> list[Notification]:
         .order_by(Notification.created_at.desc())
     )
     return list(db.execute(stmt).scalars().all())
-
-def mark_as_read(db: Session, notification_id: UUID, user_id: UUID) -> Notification | None:
-    try:
-        notification = db.get(Notification, notification_id)
-        if not notification or notification.user_id != user_id:
-            return None
-        notification.is_read = True
-        db.commit()
-        db.refresh(notification)
-        return notification
-    except Exception:
-        db.rollback()
-        raise
 
 def create(db: Session, user_id: UUID, message: str, request_id: UUID | None = None) -> Notification:
     try:
@@ -138,14 +128,6 @@ def create(db: Session, user_id: UUID, message: str, request_id: UUID | None = N
 Solo lógica de negocio. Sin HTTP, sin `db.query()`.
 
 ```python
-# backend/services/notification_service.py
-from uuid import UUID
-from sqlalchemy.orm import Session
-from backend.models.user_model import User
-from backend.models.notification_model import Notification
-from backend.repositories import notification_repository
-from backend.core.exceptions import EcoRetiroExceptions
-
 def get_my_notifications(db: Session, current_user: User) -> list[Notification]:
     return notification_repository.get_by_user(db, current_user.id)
 
@@ -158,7 +140,6 @@ def mark_notification_read(db: Session, notification_id: UUID, current_user: Use
 
 **Reglas:**
 - Excepciones siempre desde `core/exceptions.py`
-- Recibe objetos de modelo, no IDs en bruto (excepto cuando es necesario)
 - Nunca importar `HTTPException` directamente en el service
 
 ---
@@ -168,15 +149,6 @@ def mark_notification_read(db: Session, notification_id: UUID, current_user: Use
 Solo HTTP y delegación al service.
 
 ```python
-# backend/routers/notification_router.py
-from uuid import UUID
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from backend.core.dependencies import get_db, get_current_user
-from backend.models.user_model import User
-from backend.schemas.notification_schema import NotificationOut
-from backend.services import notification_service
-
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
 @router.get("/me", response_model=list[NotificationOut])
@@ -185,14 +157,6 @@ async def get_my_notifications(
     current_user: User = Depends(get_current_user)
 ) -> list[NotificationOut]:
     return notification_service.get_my_notifications(db, current_user)
-
-@router.patch("/{notification_id}", response_model=NotificationOut)
-async def mark_notification_read(
-    notification_id: UUID,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-) -> NotificationOut:
-    return notification_service.mark_notification_read(db, notification_id, current_user)
 ```
 
 **Reglas:**
@@ -207,10 +171,6 @@ async def mark_notification_read(
 Siempre con `StaticPool`. Importar todos los modelos en `conftest.py`.
 
 ```python
-# tests/test_notifications.py
-from fastapi.testclient import TestClient
-from tests.conftest import register_and_login, auth_headers, TestingSessionLocal
-
 def test_get_my_notifications_returns_200(client: TestClient):
     token = register_and_login(client)
     resp = client.get("/notifications/me", headers=auth_headers(token))
@@ -219,9 +179,6 @@ def test_get_my_notifications_returns_200(client: TestClient):
 
 def test_mark_notification_read_from_other_user_returns_404(client: TestClient):
     """Seguridad: user B no puede marcar notif de user A."""
-    from backend.repositories import notification_repository
-    from backend.models.user_model import User
-
     token_a = register_and_login(client, email="usera@eco.com")
     token_b = register_and_login(client, email="userb@eco.com")
 
@@ -239,18 +196,14 @@ def test_mark_notification_read_from_other_user_returns_404(client: TestClient):
 - Siempre `StaticPool` + `Base.metadata.create_all` en el fixture `client`
 - Todos los modelos importados en `conftest.py` antes de `create_all`
 - Cubrir: happy path, auth requerida (401), not found (404), permisos (403)
-- Usar `register_and_login()` y `auth_headers()` de conftest
 
 ---
 
 ## Paso 7 — Migración Alembic
 
 ```bash
-# 1. Verificar que el modelo esté importado en alembic/env.py
-# 2. Generar
 alembic revision --autogenerate -m "descripcion_corta"
-# 3. Revisar el archivo generado en alembic/versions/ antes de aplicar
-# 4. Aplicar
+# Revisar el archivo generado antes de aplicar
 alembic upgrade head
 ```
 
@@ -261,25 +214,140 @@ alembic upgrade head
 
 ---
 
-## Prompts de referencia para Cursor
+## Integración frontend — Patrón base
 
-**Nueva feature:**
+Cada página protegida sigue este patrón en su `<script>`:
+
+```javascript
+(function () {
+  'use strict';
+
+  // 1. Auth guard
+  if (!EcoRetiroAPI.getToken()) {
+    EcoRetiroAPI.redirectToLogin();
+    return;
+  }
+
+  // 2. Fetch y render
+  EcoRetiroAPI.getSomeData()
+    .then(function (data) {
+      // 3. Render con escapeHtml() para datos del backend
+      document.getElementById('element').textContent = escapeHtml(data.field);
+    })
+    .catch(function (err) {
+      // 4. Error state
+      showError(err.message);
+    });
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+})();
+```
+
+---
+
+## api.js — Funciones disponibles
+
+```javascript
+EcoRetiroAPI.getToken()
+EcoRetiroAPI.setToken(token)
+EcoRetiroAPI.clearToken()
+EcoRetiroAPI.redirectToLogin()
+EcoRetiroAPI.authFetch(endpoint, options)  // Bearer token + maneja 401
+
+EcoRetiroAPI.login(email, password)         // POST /auth/login → guarda token
+EcoRetiroAPI.register(name, email, password, phone)  // POST /auth/register → auto-login
+
+EcoRetiroAPI.getCurrentUser()               // GET /users/me
+EcoRetiroAPI.getMyRequests()                // GET /requests/me
+EcoRetiroAPI.getMyNotifications()           // GET /notifications/me
+```
+
+> Agregar nuevas funciones siguiendo el mismo patrón:
+> `function nombre() { return authFetch('/endpoint'); }`
+> Y exportar en `window.EcoRetiroAPI`.
+
+---
+
+## STATUS_MAP — Estados del backend
+
+```javascript
+var STATUS_MAP = {
+  REQUESTED:         { label: 'SOLICITADA',   css: '' },
+  SCHEDULED:         { label: 'AGENDADA',     css: 'scheduled' },
+  IN_ROUTE:          { label: 'EN CAMINO',    css: '' },
+  COLLECTED:         { label: 'RECOLECTADA',  css: '' },
+  CLASSIFIED:        { label: 'CLASIFICADA',  css: '' },
+  RECOVERED:         { label: 'RECUPERADA',   css: '' },
+  SENT_TO_RECYCLING: { label: 'EN RECICLAJE', css: 'scheduled' },
+  COMPLETED:         { label: 'COMPLETADA',   css: 'completed' }
+};
+```
+
+CSS classes: sin clase = verde, `scheduled` = amarillo, `completed` = gris.
+
+## TIME_MAP — Horarios del backend
+
+```javascript
+var TIME_MAP = {
+  MORNING:   'Mañana',
+  AFTERNOON: 'Tarde',
+  EVENING:   'Noche'
+};
+```
+
+---
+
+## Convenciones de seguridad frontend
+
+- **XSS:** siempre `escapeHtml()` para datos del backend renderizados en innerHTML
+- **Token:** nunca exponer en URLs ni logs
+- **401:** siempre `EcoRetiroAPI.redirectToLogin()` — limpia token y redirige
+- **Live Server:** siempre puerto 5500, nunca `file://`
+- **Imports:** `api.js` antes de `window-system.js` en todos los HTML
+
+---
+
+## Prompts de referencia
+
+**Nueva feature backend:**
 ```
 Following the workflow in docs/ai/ai_workflow.md, implement [feature].
-Read docs/ai/ai_architecture.md for conventions.
 Start with Step [N] — [descripción] in backend/[capa]/[archivo].
 Wait for my approval before moving to the next step.
 ```
 
-**Bugfix en una capa:**
+**Nueva integración frontend:**
+```
+@workspace Integrate [page].html with backend API.
+#file:/home/estudiante/ecoretiro/frontend/js/api.js
+#file:/home/estudiante/ecoretiro/frontend/pages/[page].html
+
+Follow the integration pattern in docs/ai/ai_workflow.md.
+Add needed functions to api.js first, show complete file, wait for approval.
+Then show complete [page].html with integration script, wait for approval.
+```
+
+**Bugfix en capa backend:**
 ```
 This endpoint is failing: [METHOD] [ruta]
 Error: [mensaje]
-Check against docs/ai/ai_architecture.md. Identify which layer has the problem.
+Identify which layer has the problem.
 Fix only that layer. Show me the full content of the modified file.
 ```
 
-**Agregar validación:**
+**Bugfix en integración frontend:**
+```
+This fetch is failing: [METHOD] [endpoint]
+Error: [mensaje]
+Check api.js authFetch wrapper and [page].html script.
+Fix only the failing part. Show the complete modified file.
+```
+
+**Agregar validación backend:**
 ```
 Add validation to [schema] for [campo]: [reglas].
 Validation must be in the Pydantic schema only.
@@ -288,7 +356,7 @@ Add a test for the 422 failure case.
 
 **Integrar notificación en service existente:**
 ```
-In [service_file], after [evento], call notification_repository.create() 
+In [service_file], after [evento], call notification_repository.create()
 to notify the affected user. Import notification_repository.
 Do not modify any other layer. Show me only the modified function.
 ```

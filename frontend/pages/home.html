@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-padded">
+
+    <div class="container container-lg">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-purple">
+                <div class="window-title">🏠 EcoRetiro.exe/Home</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content">
+                <div class="header header-flex">
+                    <div>
+                        <div class="welcome" id="welcomeMsg">Cargando... ⏳</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">👤</div>
+                        <div>
+                            <div class="user-name" id="userName">—</div>
+                            <div class="user-email" id="userEmail">—</div>
+                        </div>
+                        <span class="notifications-badge" id="notifBadge">🔔 0</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value" id="statTotal">—</div>
+                        <div class="stat-label">Solicitudes Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✓</div>
+                        <div class="stat-value" id="statCompleted">—</div>
+                        <div class="stat-label">Completadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-value" id="statActive">—</div>
+                        <div class="stat-label">En Proceso</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-action primary" onclick="window.location.href='nueva-solicitud.html'">
+                        <div class="btn-icon">➕</div>
+                        <div class="btn-title">Nueva Solicitud</div>
+                        <div class="btn-desc">Solicitá el retiro de residuos electrónicos</div>
+                    </button>
+                    <button class="btn-action secondary" onclick="window.location.href='tracking.html'">
+                        <div class="btn-icon">📍</div>
+                        <div class="btn-title">Rastrear Pedido</div>
+                        <div class="btn-desc">Seguí el estado de tus solicitudes</div>
+                    </button>
+                </div>
+
+                <div class="requests-section">
+                    <div class="section-title">🗂️ Mis Solicitudes Recientes</div>
+                    <div id="requestsList">
+                        <div class="request-card" style="text-align:center; opacity:0.6;">
+                            Cargando solicitudes...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/window-system.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      // Guard: redirect if not authenticated
+      if (!EcoRetiroAPI.getToken()) {
+        EcoRetiroAPI.redirectToLogin();
+        return;
+      }
+
+      var STATUS_MAP = {
+        REQUESTED:         { label: 'SOLICITADA',   css: '' },
+        SCHEDULED:         { label: 'AGENDADA',     css: 'scheduled' },
+        IN_ROUTE:          { label: 'EN CAMINO',    css: '' },
+        COLLECTED:         { label: 'RECOLECTADA',  css: '' },
+        CLASSIFIED:        { label: 'CLASIFICADA',  css: '' },
+        RECOVERED:         { label: 'RECUPERADA',   css: '' },
+        SENT_TO_RECYCLING: { label: 'EN RECICLAJE', css: 'scheduled' },
+        COMPLETED:         { label: 'COMPLETADA',   css: 'completed' }
+      };
+
+      var TIME_MAP = {
+        MORNING:   'Mañana',
+        AFTERNOON: 'Tarde',
+        EVENING:   'Noche'
+      };
+
+      // Load user data
+      EcoRetiroAPI.getCurrentUser().then(function (user) {
+        document.getElementById('welcomeMsg').textContent = '¡Hola, ' + user.name.split(' ')[0] + '! 👋';
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userEmail').textContent = user.email;
+      }).catch(function () {});
+
+      // Load notifications count
+      EcoRetiroAPI.getMyNotifications().then(function (notifs) {
+        var unread = notifs.filter(function (n) { return !n.is_read; }).length;
+        document.getElementById('notifBadge').textContent = '🔔 ' + unread;
+      }).catch(function () {});
+
+      // Load requests
+      EcoRetiroAPI.getMyRequests().then(function (requests) {
+        // Stats
+        var total = requests.length;
+        var completed = requests.filter(function (r) { return r.current_status === 'COMPLETED'; }).length;
+        var active = total - completed;
+
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statCompleted').textContent = completed;
+        document.getElementById('statActive').textContent = active;
+
+        // Render request cards
+        var container = document.getElementById('requestsList');
+        container.innerHTML = '';
+
+        if (total === 0) {
+          container.innerHTML = '<div class="request-card" style="text-align:center; opacity:0.6;">Aún no tenés solicitudes</div>';
+          return;
+        }
+
+        // Most recent first
+        requests.sort(function (a, b) {
+          return new Date(b.created_at) - new Date(a.created_at);
+        });
+
+        requests.forEach(function (req) {
+          var status = STATUS_MAP[req.current_status] || { label: req.current_status, css: '' };
+          var dateStr = formatDate(req.pickup_date);
+          var time = TIME_MAP[req.pickup_time_range] || req.pickup_time_range;
+
+          var card = document.createElement('div');
+          card.className = 'request-card';
+          card.innerHTML =
+            '<div class="request-info">' +
+              '<div class="request-tracking">' + escapeHtml(req.tracking_number) + '</div>' +
+              '<div class="request-details">' + escapeHtml(req.material_type) + ' • ' + dateStr + ' • ' + time + '</div>' +
+            '</div>' +
+            '<div class="request-status ' + status.css + '">' + status.label + '</div>';
+
+          container.appendChild(card);
+        });
+      }).catch(function () {
+        document.getElementById('requestsList').innerHTML =
+          '<div class="request-card" style="text-align:center; opacity:0.6;">Error al cargar solicitudes</div>';
+      });
+
+      function formatDate(dateStr) {
+        var parts = dateStr.split('-');
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+    })();
+    </script>
+</body>
+</html>

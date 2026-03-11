@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRetiro OS - Perfil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/retro-modern.css">
+</head>
+<body class="layout-centered layout-padded">
+
+    <div class="container container-md">
+        <div class="window">
+            <!-- Barra de título -->
+            <div class="window-titlebar titlebar-purple">
+                <div class="window-title">👤 EcoRetiro.exe/Home/Perfil</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div>
+                    <div class="window-btn">□</div>
+                    <div class="window-btn">×</div>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="window-content window-content-scroll">
+                <div class="header header-flex">
+                    <div>
+                        <div class="welcome">Mi Perfil 👤</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">🧑</div>
+                        <div>
+                            <div class="user-name">Santiago Pérez</div>
+                            <div class="user-email">santiago@email.com</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info de usuario (solo lectura) -->
+                <div class="section-title">📋 Información de Cuenta</div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Nombre completo</div>
+                        <div class="info-value">Santiago Pérez</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Correo electrónico</div>
+                        <div class="info-value">santiago@email.com</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Miembro desde</div>
+                        <div class="info-value">15 de enero de 2026</div>
+                    </div>
+                </div>
+
+                <div class="separator"><span>✏️</span></div>
+
+                <!-- Formulario de edición -->
+                <div class="form-section">
+                    <div class="section-title">🔧 Editar Perfil</div>
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" value="Santiago Pérez" placeholder="Tu nombre completo">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password-actual">Contraseña actual</label>
+                        <input type="password" id="password-actual" placeholder="Ingresá tu contraseña actual">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password-nueva">Nueva contraseña</label>
+                            <input type="password" id="password-nueva" placeholder="Mínimo 8 caracteres">
+                        </div>
+                        <div class="form-group">
+                            <label for="password-confirmar">Confirmar contraseña</label>
+                            <input type="password" id="password-confirmar" placeholder="Repetí la contraseña">
+                        </div>
+                    </div>
+
+                    <button class="btn-retro">💾 Guardar Cambios</button>
+                </div>
+
+                <div class="separator"><span>🔔</span></div>
+
+                <!-- Notificaciones recientes -->
+                <div class="section-title">🔔 Notificaciones Recientes</div>
+
+                <div class="result-panel">
+                    <ul class="activity-feed">
+                        <li class="activity-item">
+                            <div class="activity-icon">✓</div>
+                            <div class="activity-text">
+                                Tu solicitud <strong>ECO-USH-2026-0048</strong> fue marcada como <strong>COMPLETADA</strong>
+                            </div>
+                            <div class="activity-time">Hace 2h</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">🚚</div>
+                            <div class="activity-text">
+                                El operador está <strong>EN CAMINO</strong> para ECO-USH-2026-0048
+                            </div>
+                            <div class="activity-time">Hace 5h</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">📅</div>
+                            <div class="activity-text">
+                                Tu solicitud <strong>ECO-USH-2026-0048</strong> fue agendada para el 10/03/2026
+                            </div>
+                            <div class="activity-time">Hace 1 día</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">📋</div>
+                            <div class="activity-text">
+                                Solicitud <strong>ECO-USH-2026-0048</strong> creada exitosamente
+                            </div>
+                            <div class="activity-time">Hace 3 días</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Barra de estado -->
+            <div class="window-statusbar">
+                <div class="status-item">
+                    <div class="status-indicator"></div>
+                    <span>Perfil de usuario</span>
+                </div>
+                <div class="status-item">
+                    <span>v2.6.1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/window-system.js"></script>
+</body>
+</html>
