@@ -6,6 +6,7 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
+from dotenv import load_dotenv
 
 from backend.database import Base
 from backend.models.user_model import User
@@ -14,6 +15,13 @@ from backend.models.status_history_model import StatusHistory  # noqa: F401
 from backend.models.notification_model import Notification  # noqa: F401
 
 config = context.config
+
+load_dotenv()
+database_url = os.getenv("DATABASE_URL")
+if not database_url:
+    raise RuntimeError("DATABASE_URL no esta definida. Configurala en .env antes de correr Alembic.")
+config.set_main_option("sqlalchemy.url", database_url)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 

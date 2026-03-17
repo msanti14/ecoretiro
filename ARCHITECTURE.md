@@ -297,7 +297,7 @@ GET    /dashboard/stats             auth: ADMIN
 ## Variables de Entorno
 
 ```env
-DATABASE_URL=postgresql://postgres:password@localhost:5432/ecoretiro
+DATABASE_URL=postgresql://usuario:tu_contrasena@localhost:5432/ecoretiro
 SECRET_KEY=cambia_esto_por_una_clave_segura
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30

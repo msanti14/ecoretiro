@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var BASE_URL = 'http://127.0.0.1:8000';
+  var BASE_URL = window.ECORETIRO_API_URL || 'http://127.0.0.1:8000';
   var TOKEN_KEY = 'ecoretiro-token';
 
   /* -------- Token helpers -------- */
@@ -102,16 +102,69 @@
     return authFetch('/users/me');
   }
 
+  function updateProfile(data) {
+    return authFetch('/users/me', {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    });
+  }
+
   /* -------- Requests -------- */
 
   function getMyRequests() {
     return authFetch('/requests/me');
   }
 
+  function createRequest(data) {
+    return authFetch('/requests', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  function getAllRequests() {
+    return authFetch('/requests');
+  }
+
+  function updateRequestStatus(requestId, data) {
+    return authFetch('/requests/' + requestId + '/status', {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    });
+  }
+
+  /* -------- Tracking (público) -------- */
+
+  function getTrackingInfo(trackingNumber) {
+    return fetch(BASE_URL + '/track/' + encodeURIComponent(trackingNumber))
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().then(function (data) {
+            var msg = parseError(data);
+            return Promise.reject(new Error(msg));
+          });
+        }
+        return res.json();
+      });
+  }
+
+  /* -------- Admin -------- */
+
+  function getDashboardStats() {
+    return authFetch('/admin/stats');
+  }
+
   /* -------- Notifications -------- */
 
   function getMyNotifications() {
     return authFetch('/notifications/me');
+  }
+
+  function markNotificationRead(id) {
+    return authFetch('/notifications/' + id, {
+      method: 'PATCH',
+      body: JSON.stringify({ is_read: true })
+    });
   }
 
   /* -------- Public API -------- */
@@ -125,7 +178,14 @@
     login: login,
     register: register,
     getCurrentUser: getCurrentUser,
+    updateProfile: updateProfile,
     getMyRequests: getMyRequests,
-    getMyNotifications: getMyNotifications
+    createRequest: createRequest,
+    getAllRequests: getAllRequests,
+    updateRequestStatus: updateRequestStatus,
+    getTrackingInfo: getTrackingInfo,
+    getDashboardStats: getDashboardStats,
+    getMyNotifications: getMyNotifications,
+    markNotificationRead: markNotificationRead
   };
 })();

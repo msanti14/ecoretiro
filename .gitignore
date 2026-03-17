@@ -1,4 +1,3 @@
-cat > .gitignore << 'EOF'
 # Entorno virtual
 entorno/
 venv/
@@ -6,6 +5,7 @@ venv/
 # Variables de entorno
 .env
 .env.test
+.env.local
 # Python
 __pycache__/
 *.pyc
@@ -21,6 +21,14 @@ test.db
 
 # Alembic
 alembic/versions/*.pyc
+alembic.ini
+
+# Coverage
+.coverage
+
+# Cursor
+.cursor/
+.cursorrules
 
 # IDE
 .vscode/
@@ -30,4 +38,3 @@ alembic/versions/*.pyc
 # OS
 .DS_Store
 Thumbs.db
-EOF
