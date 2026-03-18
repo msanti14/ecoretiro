@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <div class="window-menubar">
+                <a href="home.html" class="window-menubar-item">🏠 Inicio</a>
+                <a href="nueva-solicitud.html" class="window-menubar-item">➕ Nueva Solicitud</a>
+                <a href="tracking.html" class="window-menubar-item">📦 Seguimiento</a>
+                <a href="perfil.html" class="window-menubar-item">👤 Perfil</a>
+                <a class="window-menubar-item" id="menuLogout">🔒 Cerrar Sesión</a>
+            </div>
+
             <!-- Contenido -->
             <div class="window-content window-content-scroll">
                 <div class="header header-flex">
@@ -30,71 +38,51 @@
                     <div class="user-info">
                         <div class="user-avatar">🛡️</div>
                         <div>
-                            <div class="user-name">Admin</div>
-                            <div class="user-email">admin@eco.com</div>
+                            <div id="userName" class="user-name">Cargando...</div>
+                            <div id="userEmail" class="user-email"></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Mensajes -->
+                <div id="errorMsg" class="error-msg" hidden></div>
 
                 <!-- Stats -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📦</div>
-                        <div class="stat-value">47</div>
+                        <div id="statTotal" class="stat-value">—</div>
                         <div class="stat-label">Solicitudes Totales</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">✓</div>
-                        <div class="stat-value">32</div>
+                        <div id="statCompleted" class="stat-value">—</div>
                         <div class="stat-label">Completadas</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">⚡</div>
-                        <div class="stat-value">11</div>
+                        <div id="statInProgress" class="stat-value">—</div>
                         <div class="stat-label">En Proceso</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">❌</div>
-                        <div class="stat-value">4</div>
-                        <div class="stat-label">Canceladas</div>
+                        <div class="stat-icon">👥</div>
+                        <div id="statUsers" class="stat-value">—</div>
+                        <div class="stat-label">Usuarios</div>
                     </div>
                 </div>
 
-                <!-- Solicitudes por operador -->
-                <div class="section-title">👷 Solicitudes por Operador</div>
+                <!-- Desglose por estado -->
+                <div class="section-title">📊 Solicitudes por Estado</div>
 
                 <table class="retro-table">
                     <thead>
                         <tr>
-                            <th>Operador</th>
-                            <th>Asignadas</th>
-                            <th>Completadas</th>
-                            <th>En Proceso</th>
-                            <th>Canceladas</th>
+                            <th>Estado</th>
+                            <th>Cantidad</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Carlos Méndez</strong></td>
-                            <td>18</td>
-                            <td>14</td>
-                            <td>3</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Laura Gómez</strong></td>
-                            <td>15</td>
-                            <td>10</td>
-                            <td>4</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Martín Ruiz</strong></td>
-                            <td>14</td>
-                            <td>8</td>
-                            <td>4</td>
-                            <td>2</td>
-                        </tr>
+                    <tbody id="statusBreakdown">
+                        <tr><td colspan="2">Cargando...</td></tr>
                     </tbody>
                 </table>
 
@@ -104,41 +92,9 @@
                 <div class="section-title">🕐 Actividad Reciente</div>
 
                 <div class="result-panel">
-                    <ul class="activity-feed">
+                    <ul id="activityFeed" class="activity-feed">
                         <li class="activity-item">
-                            <div class="activity-icon">🚚</div>
-                            <div class="activity-text">
-                                <strong>Carlos Méndez</strong> cambió ECO-USH-2026-0042 a <strong>EN CAMINO</strong>
-                            </div>
-                            <div class="activity-time">Hace 12 min</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">✓</div>
-                            <div class="activity-text">
-                                <strong>Laura Gómez</strong> completó ECO-USH-2026-0037
-                            </div>
-                            <div class="activity-time">Hace 45 min</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">📋</div>
-                            <div class="activity-text">
-                                Nueva solicitud <strong>ECO-USH-2026-0048</strong> creada por usuario Santiago
-                            </div>
-                            <div class="activity-time">Hace 1h</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">📅</div>
-                            <div class="activity-text">
-                                <strong>Martín Ruiz</strong> agendó ECO-USH-2026-0046 para 14/03/2026
-                            </div>
-                            <div class="activity-time">Hace 2h</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">❌</div>
-                            <div class="activity-text">
-                                <strong>Laura Gómez</strong> canceló ECO-USH-2026-0044 — motivo: dirección inválida
-                            </div>
-                            <div class="activity-time">Hace 3h</div>
+                            <div class="activity-text">Cargando actividad...</div>
                         </li>
                     </ul>
                 </div>
@@ -158,5 +114,216 @@
     </div>
 
     <script src="../js/window-system.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      /* ---- Auth guard ---- */
+      if (!EcoRetiroAPI.getToken()) {
+        EcoRetiroAPI.redirectToLogin();
+        return;
+      }
+
+      document.getElementById('menuLogout').addEventListener('click', function () {
+        localStorage.removeItem('ecoretiro-token');
+        window.location.href = 'login.html';
+      });
+
+      function showAccessDenied() {
+        var win = document.querySelector('.window');
+        var content = win.querySelector('.window-content');
+        content.hidden = true;
+
+        var denied = document.createElement('div');
+        denied.className = 'access-denied';
+        denied.innerHTML =
+          '<div class="access-denied-icon">🚫</div>' +
+          '<div class="access-denied-title">Acceso Denegado</div>' +
+          '<div class="access-denied-msg">No tenés permisos para acceder a esta sección</div>' +
+          '<a href="home.html" class="access-denied-btn">Volver al Inicio</a>';
+
+        var menubar = win.querySelector('.window-menubar');
+        menubar.insertAdjacentElement('afterend', denied);
+      }
+
+      /* ---- Helpers ---- */
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      var STATUS_LABELS = {
+        REQUESTED:        'Solicitada',
+        SCHEDULED:        'Agendada',
+        IN_ROUTE:         'En Camino',
+        COLLECTED:        'Recolectada',
+        CLASSIFIED:       'Clasificada',
+        RECOVERED:        'Recuperada',
+        SENT_TO_RECYCLING:'Enviada a Reciclaje',
+        COMPLETED:        'Completada'
+      };
+
+      var STATUS_ICONS = {
+        REQUESTED:        '📋',
+        SCHEDULED:        '📅',
+        IN_ROUTE:         '🚚',
+        COLLECTED:        '📥',
+        CLASSIFIED:       '🔬',
+        RECOVERED:        '♻️',
+        SENT_TO_RECYCLING:'🏭',
+        COMPLETED:        '✓'
+      };
+
+      var MATERIAL_LABELS = {
+        COMPUTADORA:    'Computadora',
+        MONITOR:        'Monitor',
+        TELEVISOR:      'Televisor',
+        IMPRESORA:      'Impresora',
+        CELULAR:        'Celular',
+        TABLET:         'Tablet',
+        ELECTRODOMESTICO:'Electrodoméstico',
+        CABLE:          'Cable',
+        PLACA_CIRCUITO: 'Placa de Circuito',
+        PILA_BATERIA:   'Pila/Batería',
+        OTRO:           'Otro'
+      };
+
+      var IN_PROGRESS_STATUSES = ['REQUESTED','SCHEDULED','IN_ROUTE','COLLECTED','CLASSIFIED','RECOVERED','SENT_TO_RECYCLING'];
+
+      function timeAgo(iso) {
+        var now = Date.now();
+        var then = new Date(iso).getTime();
+        var diff = Math.floor((now - then) / 1000);
+        if (diff < 60) return 'Hace un momento';
+        if (diff < 3600) return 'Hace ' + Math.floor(diff / 60) + ' min';
+        if (diff < 86400) return 'Hace ' + Math.floor(diff / 3600) + 'h';
+        return 'Hace ' + Math.floor(diff / 86400) + ' día' + (Math.floor(diff / 86400) > 1 ? 's' : '');
+      }
+
+      /* ---- DOM refs ---- */
+      var userName         = document.getElementById('userName');
+      var userEmail        = document.getElementById('userEmail');
+      var statTotal        = document.getElementById('statTotal');
+      var statCompleted    = document.getElementById('statCompleted');
+      var statInProgress   = document.getElementById('statInProgress');
+      var statUsers        = document.getElementById('statUsers');
+      var statusBreakdown  = document.getElementById('statusBreakdown');
+      var activityFeed     = document.getElementById('activityFeed');
+      var errorMsg         = document.getElementById('errorMsg');
+
+      /* ---- Load user ---- */
+      EcoRetiroAPI.getCurrentUser().then(function (user) {
+        userName.textContent = escapeHtml(user.name);
+        userEmail.textContent = escapeHtml(user.email);
+      });
+
+      /* ---- Load stats ---- */
+      EcoRetiroAPI.getDashboardStats()
+        .then(function (stats) {
+          statTotal.textContent = stats.total_requests;
+          statUsers.textContent = stats.total_users;
+
+          var completed = stats.requests_by_status['COMPLETED'] || 0;
+          statCompleted.textContent = completed;
+
+          var inProgress = 0;
+          IN_PROGRESS_STATUSES.forEach(function (s) {
+            inProgress += (stats.requests_by_status[s] || 0);
+          });
+          statInProgress.textContent = inProgress;
+
+          renderStatusBreakdown(stats.requests_by_status);
+        })
+        .catch(function (err) {
+          var msg = (err.message || '').toLowerCase();
+          if (msg.indexOf('403') !== -1 || msg.indexOf('forbidden') !== -1 || msg.indexOf('no autorizado') !== -1) {
+            showAccessDenied();
+          } else {
+            errorMsg.hidden = false;
+            errorMsg.textContent = err.message || 'Error al cargar estadísticas';
+          }
+        });
+
+      function renderStatusBreakdown(byStatus) {
+        statusBreakdown.innerHTML = '';
+        var keys = Object.keys(STATUS_LABELS);
+        var hasData = false;
+
+        keys.forEach(function (key) {
+          var count = byStatus[key] || 0;
+          if (count === 0) return;
+          hasData = true;
+
+          var tr = document.createElement('tr');
+
+          var tdStatus = document.createElement('td');
+          tdStatus.textContent = (STATUS_ICONS[key] || '') + ' ' + (STATUS_LABELS[key] || key);
+
+          var tdCount = document.createElement('td');
+          tdCount.textContent = count;
+
+          tr.appendChild(tdStatus);
+          tr.appendChild(tdCount);
+          statusBreakdown.appendChild(tr);
+        });
+
+        if (!hasData) {
+          var emptyRow = document.createElement('tr');
+          var emptyTd = document.createElement('td');
+          emptyTd.setAttribute('colspan', '2');
+          emptyTd.textContent = 'Sin datos';
+          emptyRow.appendChild(emptyTd);
+          statusBreakdown.appendChild(emptyRow);
+        }
+      }
+
+      /* ---- Load recent activity ---- */
+      EcoRetiroAPI.getAllRequests()
+        .then(function (requests) {
+          var sorted = requests.slice().sort(function (a, b) {
+            return new Date(b.updated_at) - new Date(a.updated_at);
+          });
+          var recent = sorted.slice(0, 10);
+
+          activityFeed.innerHTML = '';
+
+          if (!recent.length) {
+            activityFeed.innerHTML = '<li class="activity-item"><div class="activity-text">Sin actividad reciente</div></li>';
+            return;
+          }
+
+          recent.forEach(function (req) {
+            var li = document.createElement('li');
+            li.className = 'activity-item';
+
+            var icon = document.createElement('div');
+            icon.className = 'activity-icon';
+            icon.textContent = STATUS_ICONS[req.current_status] || '📋';
+
+            var text = document.createElement('div');
+            text.className = 'activity-text';
+            var material = MATERIAL_LABELS[req.material_type] || req.material_type;
+            var status = STATUS_LABELS[req.current_status] || req.current_status;
+            text.innerHTML = '<strong>' + escapeHtml(req.tracking_number) + '</strong> — ' +
+              escapeHtml(material) + ' — <strong>' + escapeHtml(status) + '</strong>';
+
+            var time = document.createElement('div');
+            time.className = 'activity-time';
+            time.textContent = timeAgo(req.updated_at);
+
+            li.appendChild(icon);
+            li.appendChild(text);
+            li.appendChild(time);
+            activityFeed.appendChild(li);
+          });
+        })
+        .catch(function () {
+          activityFeed.innerHTML = '<li class="activity-item"><div class="activity-text">Error al cargar actividad</div></li>';
+        });
+    })();
+    </script>
 </body>
 </html>

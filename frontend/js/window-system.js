@@ -57,11 +57,14 @@
       var prefix = inPages ? '' : 'pages/';
       var isLoggedIn = localStorage.getItem('ecoretiro-token') !== null;
 
-      var taskbar = document.createElement('div');
-      taskbar.className = 'desktop-taskbar';
+      var screen = document.createElement('div');
+      screen.className = 'desktop-screen';
+
+      var grid = document.createElement('div');
+      grid.className = 'desktop-grid';
 
       if (!isLoggedIn) {
-        taskbar.appendChild(createDesktopIcon('\uD83D\uDD11', 'Iniciar Sesi\u00F3n', prefix + 'login.html'));
+        grid.appendChild(createDesktopIcon('\uD83D\uDD11', 'Iniciar Sesi\u00F3n', prefix + 'login.html'));
       } else {
         var items = [
           { emoji: '\uD83C\uDFE0', label: 'Inicio', href: prefix + 'home.html' },
@@ -73,19 +76,20 @@
 
         items.forEach(function (item) {
           if (item.href) {
-            taskbar.appendChild(createDesktopIcon(item.emoji, item.label, item.href));
+            grid.appendChild(createDesktopIcon(item.emoji, item.label, item.href));
           } else {
             var icon = createDesktopIcon(item.emoji, item.label);
             icon.addEventListener('click', function () {
               localStorage.removeItem('ecoretiro-token');
               window.location.href = prefix + 'login.html';
             });
-            taskbar.appendChild(icon);
+            grid.appendChild(icon);
           }
         });
       }
 
-      document.body.appendChild(taskbar);
+      screen.appendChild(grid);
+      document.body.appendChild(screen);
     }, 300);
   }
 

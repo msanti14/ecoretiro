@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <div class="window-menubar">
+                <a href="home.html" class="window-menubar-item active">🏠 Inicio</a>
+                <a href="nueva-solicitud.html" class="window-menubar-item">➕ Nueva Solicitud</a>
+                <a href="tracking.html" class="window-menubar-item">📦 Seguimiento</a>
+                <a href="perfil.html" class="window-menubar-item">👤 Perfil</a>
+                <a class="window-menubar-item" id="menuLogout">🔒 Cerrar Sesión</a>
+            </div>
+
             <!-- Contenido -->
             <div class="window-content">
                 <div class="header header-flex">
@@ -80,6 +88,7 @@
         </div>
     </div>
 
+    <script src="../js/config.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/window-system.js"></script>
     <script>
@@ -91,6 +100,11 @@
         EcoRetiroAPI.redirectToLogin();
         return;
       }
+
+      document.getElementById('menuLogout').addEventListener('click', function () {
+        localStorage.removeItem('ecoretiro-token');
+        window.location.href = 'login.html';
+      });
 
       var STATUS_MAP = {
         REQUESTED:         { label: 'SOLICITADA',   css: '' },

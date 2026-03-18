@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <div class="window-menubar">
+                <a href="home.html" class="window-menubar-item">🏠 Inicio</a>
+                <a href="nueva-solicitud.html" class="window-menubar-item active">➕ Nueva Solicitud</a>
+                <a href="tracking.html" class="window-menubar-item">📦 Seguimiento</a>
+                <a href="perfil.html" class="window-menubar-item">👤 Perfil</a>
+                <a class="window-menubar-item" id="menuLogout">🔒 Cerrar Sesión</a>
+            </div>
+
             <!-- Contenido -->
             <div class="window-content window-content-scroll">
                 <div class="header header-centered">
@@ -28,28 +36,33 @@
                     <p class="tagline">Solicitá el retiro de tus residuos electrónicos</p>
                 </div>
 
+                <!-- Mensaje de éxito (oculto por defecto) -->
+                <div id="successMsg" class="success-msg" hidden></div>
+                <!-- Mensaje de error (oculto por defecto) -->
+                <div id="errorMsg" class="error-msg" hidden></div>
+
                 <form id="newRequestForm">
                     <div class="form-section">
                         <div class="section-title">📍 Datos de Retiro</div>
 
                         <div class="form-group">
                             <label>Dirección <span class="required">*</span></label>
-                            <input type="text" placeholder="Ej: Av. Corrientes 1234, CABA">
+                            <input type="text" id="address" required placeholder="Ej: Av. Corrientes 1234, CABA">
                             <div class="help-text">Dirección completa donde retiraremos el material</div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Fecha de Retiro <span class="required">*</span></label>
-                                <input type="date">
+                                <input type="date" id="pickupDate" required>
                             </div>
                             <div class="form-group">
                                 <label>Horario <span class="required">*</span></label>
-                                <select>
-                                    <option>Seleccionar...</option>
-                                    <option>Mañana (9-13hs)</option>
-                                    <option>Tarde (13-18hs)</option>
-                                    <option>Noche (18-21hs)</option>
+                                <select id="pickupTime" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="MORNING">Mañana (9-13hs)</option>
+                                    <option value="AFTERNOON">Tarde (13-18hs)</option>
+                                    <option value="EVENING">Noche (18-21hs)</option>
                                 </select>
                             </div>
                         </div>
@@ -61,45 +74,126 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Tipo de Material <span class="required">*</span></label>
-                                <select>
-                                    <option>Seleccionar...</option>
-                                    <option>Computadora</option>
-                                    <option>Monitor</option>
-                                    <option>Televisor</option>
-                                    <option>Impresora</option>
-                                    <option>Celular</option>
-                                    <option>Tablet</option>
-                                    <option>Electrodoméstico</option>
-                                    <option>Cable</option>
-                                    <option>Placa de Circuito</option>
-                                    <option>Pila/Batería</option>
-                                    <option>Otro</option>
+                                <select id="materialType" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="COMPUTADORA">Computadora</option>
+                                    <option value="MONITOR">Monitor</option>
+                                    <option value="TELEVISOR">Televisor</option>
+                                    <option value="IMPRESORA">Impresora</option>
+                                    <option value="CELULAR">Celular</option>
+                                    <option value="TABLET">Tablet</option>
+                                    <option value="ELECTRODOMESTICO">Electrodoméstico</option>
+                                    <option value="CABLE">Cable</option>
+                                    <option value="PLACA_CIRCUITO">Placa de Circuito</option>
+                                    <option value="PILA_BATERIA">Pila/Batería</option>
+                                    <option value="OTRO">Otro</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Volumen Estimado <span class="required">*</span></label>
-                                <select>
-                                    <option>Seleccionar...</option>
-                                    <option>Pequeño (caja chica)</option>
-                                    <option>Mediano (caja grande)</option>
-                                    <option>Grande (varios items)</option>
+                                <select id="estimatedVolume" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="SMALL">Pequeño (caja chica)</option>
+                                    <option value="MEDIUM">Mediano (caja grande)</option>
+                                    <option value="LARGE">Grande (varios items)</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label>Descripción <span class="required">*</span></label>
-                            <textarea placeholder="Describí el estado y cantidad de materiales..."></textarea>
+                            <textarea id="description" required minlength="10" placeholder="Describí el estado y cantidad de materiales..."></textarea>
                             <div class="help-text">Mínimo 10 caracteres</div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-retro btn-green">Solicitar Retiro</button>
+                    <button type="submit" id="submitBtn" class="btn-retro btn-green">Solicitar Retiro</button>
                 </form>
             </div>
         </div>
     </div>
 
     <script src="../js/window-system.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      /* ---- Auth guard ---- */
+      if (!EcoRetiroAPI.getToken()) {
+        EcoRetiroAPI.redirectToLogin();
+        return;
+      }
+
+      document.getElementById('menuLogout').addEventListener('click', function () {
+        localStorage.removeItem('ecoretiro-token');
+        window.location.href = 'login.html';
+      });
+
+      /* ---- Helpers ---- */
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      function todayISO() {
+        var d = new Date();
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + mm + '-' + dd;
+      }
+
+      /* ---- DOM refs ---- */
+      var form        = document.getElementById('newRequestForm');
+      var submitBtn   = document.getElementById('submitBtn');
+      var successMsg  = document.getElementById('successMsg');
+      var errorMsg    = document.getElementById('errorMsg');
+      var pickupDate  = document.getElementById('pickupDate');
+
+      /* ---- Set min date to today ---- */
+      pickupDate.setAttribute('min', todayISO());
+
+      /* ---- Form submit ---- */
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        errorMsg.hidden = true;
+        successMsg.hidden = true;
+
+        var data = {
+          address:           document.getElementById('address').value.trim(),
+          pickup_date:       pickupDate.value,
+          pickup_time_range: document.getElementById('pickupTime').value,
+          material_type:     document.getElementById('materialType').value,
+          estimated_volume:  document.getElementById('estimatedVolume').value,
+          description:       document.getElementById('description').value.trim()
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+
+        EcoRetiroAPI.createRequest(data)
+          .then(function (res) {
+            form.hidden = true;
+            successMsg.hidden = false;
+            successMsg.innerHTML =
+              '✅ Solicitud creada — Número de seguimiento: <strong>' +
+              escapeHtml(res.tracking_number) + '</strong>';
+
+            setTimeout(function () {
+              window.location.href = 'home.html';
+            }, 2000);
+          })
+          .catch(function (err) {
+            errorMsg.hidden = false;
+            errorMsg.textContent = err.message || 'Error al crear la solicitud';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Solicitar Retiro';
+          });
+      });
+    })();
+    </script>
 </body>
 </html>

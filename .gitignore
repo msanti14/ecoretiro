@@ -30,6 +30,12 @@ alembic.ini
 .cursor/
 .cursorrules
 
+# Internal docs (not for public/client repos)
+AI_PROJECT_PROMPT.md
+AI_RULES.md
+docs/ai/
+docs/ROADMAP.md
+
 # IDE
 .vscode/
 .idea/

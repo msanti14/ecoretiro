@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <div class="window-menubar">
+                <a href="home.html" class="window-menubar-item">🏠 Inicio</a>
+                <a href="nueva-solicitud.html" class="window-menubar-item">➕ Nueva Solicitud</a>
+                <a href="tracking.html" class="window-menubar-item active">📦 Seguimiento</a>
+                <a href="perfil.html" class="window-menubar-item">👤 Perfil</a>
+                <a class="window-menubar-item" id="menuLogout">🔒 Cerrar Sesión</a>
+            </div>
+
             <!-- Contenido -->
             <div class="window-content">
                 <div class="header header-centered">
@@ -30,74 +38,233 @@
 
                 <div class="tracking-input-section">
                     <div class="input-group">
-                        <input type="text" placeholder="ECO-USHUAIA-2026-0042" value="ECO-USHUAIA-2026-0042">
-                        <button class="btn-track">BUSCAR</button>
+                        <input type="text" id="trackingInput" placeholder="ECO-USHUAIA-2026-0001">
+                        <button id="searchBtn" class="btn-track">BUSCAR</button>
                     </div>
                 </div>
 
-                <div class="result-panel">
-                    <div class="tracking-code">ECO-USHUAIA-2026-0042</div>
+                <!-- Mensaje de error -->
+                <div id="errorMsg" class="error-msg" hidden></div>
+
+                <!-- Resultado (oculto por defecto) -->
+                <div id="resultPanel" class="result-panel" hidden>
+                    <div id="trackingCode" class="tracking-code"></div>
                     <div class="text-center">
-                        <span class="status-badge">✓ EN CAMINO</span>
+                        <span id="statusBadge" class="status-badge"></span>
                     </div>
 
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">Tipo de Material</div>
-                            <div class="info-value">Computadora</div>
+                            <div id="infoMaterial" class="info-value"></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Fecha de Retiro</div>
-                            <div class="info-value">15/03/2026</div>
+                            <div id="infoDate" class="info-value"></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Horario</div>
-                            <div class="info-value">Mañana (9-13hs)</div>
+                            <div id="infoTime" class="info-value"></div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Vehículo</div>
-                            <div class="info-value">DUCATO</div>
+                            <div id="infoVehicle" class="info-value"></div>
                         </div>
                     </div>
 
                     <div class="timeline">
                         <div class="timeline-title">Historial de Estados</div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon active">✓</div>
-                            <div class="timeline-content">
-                                <div class="timeline-status">En Camino</div>
-                                <div class="timeline-date">10/03/2026 - 14:32hs</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon">✓</div>
-                            <div class="timeline-content">
-                                <div class="timeline-status">Agendada</div>
-                                <div class="timeline-date">09/03/2026 - 10:15hs</div>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-icon">✓</div>
-                            <div class="timeline-content">
-                                <div class="timeline-status">Solicitada</div>
-                                <div class="timeline-date">08/03/2026 - 16:45hs</div>
-                            </div>
-                        </div>
+                        <div id="timelineList"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Barra de estado -->
             <div class="window-statusbar">
-                <span>Última actualización: Hoy 14:32hs</span>
+                <span id="statusBarInfo">Ingresá un número de seguimiento</span>
                 <span>v2.6.1</span>
             </div>
         </div>
     </div>
 
     <script src="../js/window-system.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      document.getElementById('menuLogout').addEventListener('click', function () {
+        localStorage.removeItem('ecoretiro-token');
+        window.location.href = 'login.html';
+      });
+
+      /* ---- Helpers ---- */
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      var STATUS_LABELS = {
+        REQUESTED:        'Solicitada',
+        SCHEDULED:        'Agendada',
+        IN_ROUTE:         'En Camino',
+        COLLECTED:        'Recolectada',
+        CLASSIFIED:       'Clasificada',
+        RECOVERED:        'Recuperada',
+        SENT_TO_RECYCLING:'Enviada a Reciclaje',
+        COMPLETED:        'Completada'
+      };
+
+      var STATUS_CLASSES = {
+        REQUESTED:        'badge-yellow',
+        SCHEDULED:        'badge-cyan',
+        IN_ROUTE:         'badge-blue',
+        COLLECTED:        'badge-purple',
+        CLASSIFIED:       'badge-purple',
+        RECOVERED:        'badge-green',
+        SENT_TO_RECYCLING:'badge-green',
+        COMPLETED:        'badge-green'
+      };
+
+      var TIME_LABELS = {
+        MORNING:   'Mañana (9-13hs)',
+        AFTERNOON: 'Tarde (13-18hs)',
+        EVENING:   'Noche (18-21hs)'
+      };
+
+      var MATERIAL_LABELS = {
+        COMPUTADORA:    'Computadora',
+        MONITOR:        'Monitor',
+        TELEVISOR:      'Televisor',
+        IMPRESORA:      'Impresora',
+        CELULAR:        'Celular',
+        TABLET:         'Tablet',
+        ELECTRODOMESTICO:'Electrodoméstico',
+        CABLE:          'Cable',
+        PLACA_CIRCUITO: 'Placa de Circuito',
+        PILA_BATERIA:   'Pila/Batería',
+        OTRO:           'Otro'
+      };
+
+      function formatDate(isoDate) {
+        var parts = isoDate.split('-');
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
+      }
+
+      function formatTimestamp(ts) {
+        var d = new Date(ts);
+        var dd = String(d.getDate()).padStart(2, '0');
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var yy = d.getFullYear();
+        var hh = String(d.getHours()).padStart(2, '0');
+        var mi = String(d.getMinutes()).padStart(2, '0');
+        return dd + '/' + mm + '/' + yy + ' - ' + hh + ':' + mi + 'hs';
+      }
+
+      /* ---- DOM refs ---- */
+      var trackingInput = document.getElementById('trackingInput');
+      var searchBtn     = document.getElementById('searchBtn');
+      var errorMsg      = document.getElementById('errorMsg');
+      var resultPanel   = document.getElementById('resultPanel');
+      var trackingCode  = document.getElementById('trackingCode');
+      var statusBadge   = document.getElementById('statusBadge');
+      var infoMaterial  = document.getElementById('infoMaterial');
+      var infoDate      = document.getElementById('infoDate');
+      var infoTime      = document.getElementById('infoTime');
+      var infoVehicle   = document.getElementById('infoVehicle');
+      var timelineList  = document.getElementById('timelineList');
+      var statusBarInfo = document.getElementById('statusBarInfo');
+
+      /* ---- Search logic ---- */
+      function doSearch(number) {
+        number = number.trim();
+        if (!number) return;
+
+        errorMsg.hidden = true;
+        resultPanel.hidden = true;
+        searchBtn.disabled = true;
+        searchBtn.textContent = '...';
+
+        EcoRetiroAPI.getTrackingInfo(number)
+          .then(function (res) {
+            renderResult(res);
+          })
+          .catch(function (err) {
+            errorMsg.hidden = false;
+            errorMsg.textContent = err.message || 'No se encontró la solicitud';
+          })
+          .then(function () {
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'BUSCAR';
+          });
+      }
+
+      function renderResult(data) {
+        var status = data.current_status;
+        var label  = STATUS_LABELS[status] || status;
+        var cls    = STATUS_CLASSES[status] || 'badge-default';
+
+        trackingCode.textContent = escapeHtml(data.tracking_number);
+        statusBadge.textContent = '✓ ' + escapeHtml(label);
+        statusBadge.className = 'status-badge ' + cls;
+
+        infoMaterial.textContent = MATERIAL_LABELS[data.material_type] || data.material_type;
+        infoDate.textContent = formatDate(data.pickup_date);
+        infoTime.textContent = TIME_LABELS[data.pickup_time_range] || data.pickup_time_range;
+        infoVehicle.textContent = data.vehicle_assigned || 'Sin asignar';
+
+        // Timeline
+        timelineList.innerHTML = '';
+        var history = data.history || [];
+        history.forEach(function (entry, i) {
+          var item = document.createElement('div');
+          item.className = 'timeline-item';
+
+          var icon = document.createElement('div');
+          icon.className = 'timeline-icon' + (i === 0 ? ' active' : '');
+          icon.textContent = '✓';
+
+          var content = document.createElement('div');
+          content.className = 'timeline-content';
+
+          var statusDiv = document.createElement('div');
+          statusDiv.className = 'timeline-status';
+          statusDiv.textContent = STATUS_LABELS[entry.status] || entry.status;
+
+          var dateDiv = document.createElement('div');
+          dateDiv.className = 'timeline-date';
+          dateDiv.textContent = formatTimestamp(entry.timestamp);
+
+          content.appendChild(statusDiv);
+          content.appendChild(dateDiv);
+          item.appendChild(icon);
+          item.appendChild(content);
+          timelineList.appendChild(item);
+        });
+
+        resultPanel.hidden = false;
+        statusBarInfo.textContent = 'Última actualización: ' + (history.length ? formatTimestamp(history[0].timestamp) : 'N/A');
+      }
+
+      /* ---- Events ---- */
+      searchBtn.addEventListener('click', function () {
+        doSearch(trackingInput.value);
+      });
+
+      trackingInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') doSearch(trackingInput.value);
+      });
+
+      /* ---- Auto-search from URL ---- */
+      var params = new URLSearchParams(window.location.search);
+      var trackingParam = params.get('tracking');
+      if (trackingParam) {
+        trackingInput.value = trackingParam;
+        doSearch(trackingParam);
+      }
+    })();
+    </script>
 </body>
 </html>

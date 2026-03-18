@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <div class="window-menubar">
+                <a href="home.html" class="window-menubar-item">🏠 Inicio</a>
+                <a href="nueva-solicitud.html" class="window-menubar-item">➕ Nueva Solicitud</a>
+                <a href="tracking.html" class="window-menubar-item">📦 Seguimiento</a>
+                <a href="perfil.html" class="window-menubar-item">👤 Perfil</a>
+                <a class="window-menubar-item" id="menuLogout">🔒 Cerrar Sesión</a>
+            </div>
+
             <!-- Contenido -->
             <div class="window-content window-content-scroll">
                 <div class="header header-flex">
@@ -30,46 +38,53 @@
                     <div class="user-info">
                         <div class="user-avatar">⚙️</div>
                         <div>
-                            <div class="user-name">Carlos (Operador)</div>
-                            <div class="user-email">operador@eco.com</div>
+                            <div id="userName" class="user-name">Cargando...</div>
+                            <div id="userEmail" class="user-email"></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Mensajes -->
+                <div id="successMsg" class="success-msg" hidden></div>
+                <div id="errorMsg" class="error-msg" hidden></div>
 
                 <!-- Stats rápidos -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📋</div>
-                        <div class="stat-value">8</div>
+                        <div id="statPending" class="stat-value">—</div>
                         <div class="stat-label">Pendientes</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🚚</div>
-                        <div class="stat-value">3</div>
+                        <div id="statInRoute" class="stat-value">—</div>
                         <div class="stat-label">En Camino</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">✓</div>
-                        <div class="stat-value">12</div>
-                        <div class="stat-label">Completadas Hoy</div>
+                        <div id="statCompleted" class="stat-value">—</div>
+                        <div class="stat-label">Completadas</div>
                     </div>
                 </div>
 
                 <!-- Filtro -->
                 <div class="filter-bar">
                     <label>Filtrar por estado:</label>
-                    <select>
-                        <option>Todos</option>
-                        <option>Solicitada</option>
-                        <option>Agendada</option>
-                        <option>En Camino</option>
-                        <option>Completada</option>
-                        <option>Cancelada</option>
+                    <select id="statusFilter">
+                        <option value="">Todos</option>
+                        <option value="REQUESTED">Solicitada</option>
+                        <option value="SCHEDULED">Agendada</option>
+                        <option value="IN_ROUTE">En Camino</option>
+                        <option value="COLLECTED">Recolectada</option>
+                        <option value="CLASSIFIED">Clasificada</option>
+                        <option value="RECOVERED">Recuperada</option>
+                        <option value="SENT_TO_RECYCLING">Enviada a Reciclaje</option>
+                        <option value="COMPLETED">Completada</option>
                     </select>
                 </div>
 
                 <!-- Tabla de solicitudes -->
-                <div class="section-title">📦 Solicitudes Asignadas</div>
+                <div class="section-title">📦 Solicitudes</div>
 
                 <table class="retro-table">
                     <thead>
@@ -82,87 +97,8 @@
                             <th>Cambiar Estado</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="request-tracking">ECO-USH-2026-0042</td>
-                            <td>Computadora</td>
-                            <td>Av. Maipú 505</td>
-                            <td>15/03/2026</td>
-                            <td><span class="request-status">EN CAMINO</span></td>
-                            <td>
-                                <select class="status-select">
-                                    <option>Solicitada</option>
-                                    <option>Agendada</option>
-                                    <option selected>En Camino</option>
-                                    <option>Completada</option>
-                                    <option>Cancelada</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="request-tracking">ECO-USH-2026-0041</td>
-                            <td>Monitor</td>
-                            <td>San Martín 1200</td>
-                            <td>14/03/2026</td>
-                            <td><span class="request-status scheduled">AGENDADA</span></td>
-                            <td>
-                                <select class="status-select">
-                                    <option>Solicitada</option>
-                                    <option selected>Agendada</option>
-                                    <option>En Camino</option>
-                                    <option>Completada</option>
-                                    <option>Cancelada</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="request-tracking">ECO-USH-2026-0040</td>
-                            <td>Impresora</td>
-                            <td>Gobernador Paz 340</td>
-                            <td>13/03/2026</td>
-                            <td><span class="request-status">SOLICITADA</span></td>
-                            <td>
-                                <select class="status-select">
-                                    <option selected>Solicitada</option>
-                                    <option>Agendada</option>
-                                    <option>En Camino</option>
-                                    <option>Completada</option>
-                                    <option>Cancelada</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="request-tracking">ECO-USH-2026-0038</td>
-                            <td>Celular</td>
-                            <td>Deloqui 880</td>
-                            <td>12/03/2026</td>
-                            <td><span class="request-status completed">COMPLETADA</span></td>
-                            <td>
-                                <select class="status-select">
-                                    <option>Solicitada</option>
-                                    <option>Agendada</option>
-                                    <option>En Camino</option>
-                                    <option selected>Completada</option>
-                                    <option>Cancelada</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="request-tracking">ECO-USH-2026-0035</td>
-                            <td>Televisor</td>
-                            <td>Yaganes 72</td>
-                            <td>11/03/2026</td>
-                            <td><span class="request-status scheduled">AGENDADA</span></td>
-                            <td>
-                                <select class="status-select">
-                                    <option>Solicitada</option>
-                                    <option selected>Agendada</option>
-                                    <option>En Camino</option>
-                                    <option>Completada</option>
-                                    <option>Cancelada</option>
-                                </select>
-                            </td>
-                        </tr>
+                    <tbody id="requestsBody">
+                        <tr><td colspan="6">Cargando solicitudes...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -181,5 +117,224 @@
     </div>
 
     <script src="../js/window-system.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      /* ---- Auth guard ---- */
+      if (!EcoRetiroAPI.getToken()) {
+        EcoRetiroAPI.redirectToLogin();
+        return;
+      }
+
+      document.getElementById('menuLogout').addEventListener('click', function () {
+        localStorage.removeItem('ecoretiro-token');
+        window.location.href = 'login.html';
+      });
+
+      function showAccessDenied() {
+        var win = document.querySelector('.window');
+        var content = win.querySelector('.window-content');
+        content.hidden = true;
+
+        var denied = document.createElement('div');
+        denied.className = 'access-denied';
+        denied.innerHTML =
+          '<div class="access-denied-icon">🚫</div>' +
+          '<div class="access-denied-title">Acceso Denegado</div>' +
+          '<div class="access-denied-msg">No tenés permisos para acceder a esta sección</div>' +
+          '<a href="home.html" class="access-denied-btn">Volver al Inicio</a>';
+
+        var menubar = win.querySelector('.window-menubar');
+        menubar.insertAdjacentElement('afterend', denied);
+      }
+
+      /* ---- Helpers ---- */
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      var STATUS_LABELS = {
+        REQUESTED:        'Solicitada',
+        SCHEDULED:        'Agendada',
+        IN_ROUTE:         'En Camino',
+        COLLECTED:        'Recolectada',
+        CLASSIFIED:       'Clasificada',
+        RECOVERED:        'Recuperada',
+        SENT_TO_RECYCLING:'Enviada a Reciclaje',
+        COMPLETED:        'Completada'
+      };
+
+      var STATUS_ORDER = [
+        'REQUESTED','SCHEDULED','IN_ROUTE','COLLECTED',
+        'CLASSIFIED','RECOVERED','SENT_TO_RECYCLING','COMPLETED'
+      ];
+
+      var MATERIAL_LABELS = {
+        COMPUTADORA:    'Computadora',
+        MONITOR:        'Monitor',
+        TELEVISOR:      'Televisor',
+        IMPRESORA:      'Impresora',
+        CELULAR:        'Celular',
+        TABLET:         'Tablet',
+        ELECTRODOMESTICO:'Electrodoméstico',
+        CABLE:          'Cable',
+        PLACA_CIRCUITO: 'Placa de Circuito',
+        PILA_BATERIA:   'Pila/Batería',
+        OTRO:           'Otro'
+      };
+
+      function formatDate(isoDate) {
+        var parts = isoDate.split('-');
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
+      }
+
+      /* ---- DOM refs ---- */
+      var userName      = document.getElementById('userName');
+      var userEmail     = document.getElementById('userEmail');
+      var statPending   = document.getElementById('statPending');
+      var statInRoute   = document.getElementById('statInRoute');
+      var statCompleted = document.getElementById('statCompleted');
+      var statusFilter  = document.getElementById('statusFilter');
+      var requestsBody  = document.getElementById('requestsBody');
+      var successMsg    = document.getElementById('successMsg');
+      var errorMsg      = document.getElementById('errorMsg');
+
+      var allRequests = [];
+
+      /* ---- Load user ---- */
+      EcoRetiroAPI.getCurrentUser().then(function (user) {
+        userName.textContent = escapeHtml(user.name) + ' (' + escapeHtml(user.role) + ')';
+        userEmail.textContent = escapeHtml(user.email);
+      });
+
+      /* ---- Load requests ---- */
+      function loadRequests() {
+        EcoRetiroAPI.getAllRequests()
+          .then(function (data) {
+            allRequests = data;
+            updateStats();
+            renderTable();
+          })
+          .catch(function (err) {
+            var msg = (err.message || '').toLowerCase();
+            if (msg.indexOf('403') !== -1 || msg.indexOf('forbidden') !== -1 || msg.indexOf('no autorizado') !== -1) {
+              showAccessDenied();
+            } else {
+              errorMsg.hidden = false;
+              errorMsg.textContent = err.message || 'Error al cargar solicitudes';
+            }
+          });
+      }
+
+      function updateStats() {
+        var pending = 0, inRoute = 0, completed = 0;
+        allRequests.forEach(function (r) {
+          if (r.current_status === 'REQUESTED' || r.current_status === 'SCHEDULED') pending++;
+          else if (r.current_status === 'IN_ROUTE') inRoute++;
+          else if (r.current_status === 'COMPLETED') completed++;
+        });
+        statPending.textContent = pending;
+        statInRoute.textContent = inRoute;
+        statCompleted.textContent = completed;
+      }
+
+      function renderTable() {
+        var filter = statusFilter.value;
+        var filtered = filter
+          ? allRequests.filter(function (r) { return r.current_status === filter; })
+          : allRequests;
+
+        requestsBody.innerHTML = '';
+
+        if (!filtered.length) {
+          var emptyRow = document.createElement('tr');
+          var emptyTd = document.createElement('td');
+          emptyTd.setAttribute('colspan', '6');
+          emptyTd.textContent = 'No hay solicitudes';
+          emptyRow.appendChild(emptyTd);
+          requestsBody.appendChild(emptyRow);
+          return;
+        }
+
+        filtered.forEach(function (req) {
+          var tr = document.createElement('tr');
+
+          var tdTracking = document.createElement('td');
+          tdTracking.className = 'request-tracking';
+          tdTracking.textContent = req.tracking_number;
+
+          var tdMaterial = document.createElement('td');
+          tdMaterial.textContent = MATERIAL_LABELS[req.material_type] || req.material_type;
+
+          var tdAddress = document.createElement('td');
+          tdAddress.textContent = req.address;
+
+          var tdDate = document.createElement('td');
+          tdDate.textContent = formatDate(req.pickup_date);
+
+          var tdStatus = document.createElement('td');
+          var badge = document.createElement('span');
+          badge.className = 'request-status';
+          badge.textContent = STATUS_LABELS[req.current_status] || req.current_status;
+          tdStatus.appendChild(badge);
+
+          var tdAction = document.createElement('td');
+          var select = document.createElement('select');
+          select.className = 'status-select';
+
+          STATUS_ORDER.forEach(function (s) {
+            var opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = STATUS_LABELS[s];
+            if (s === req.current_status) opt.selected = true;
+            select.appendChild(opt);
+          });
+
+          select.addEventListener('change', function () {
+            handleStatusChange(req.id, select.value, select);
+          });
+
+          tdAction.appendChild(select);
+
+          tr.appendChild(tdTracking);
+          tr.appendChild(tdMaterial);
+          tr.appendChild(tdAddress);
+          tr.appendChild(tdDate);
+          tr.appendChild(tdStatus);
+          tr.appendChild(tdAction);
+          requestsBody.appendChild(tr);
+        });
+      }
+
+      function handleStatusChange(requestId, newStatus, selectEl) {
+        successMsg.hidden = true;
+        errorMsg.hidden = true;
+        selectEl.disabled = true;
+
+        EcoRetiroAPI.updateRequestStatus(requestId, { current_status: newStatus })
+          .then(function () {
+            successMsg.hidden = false;
+            successMsg.textContent = '✅ Estado actualizado correctamente';
+            loadRequests();
+          })
+          .catch(function (err) {
+            errorMsg.hidden = false;
+            errorMsg.textContent = err.message || 'Error al actualizar estado';
+            selectEl.disabled = false;
+          });
+      }
+
+      /* ---- Filter ---- */
+      statusFilter.addEventListener('change', renderTable);
+
+      /* ---- Init ---- */
+      loadRequests();
+    })();
+    </script>
 </body>
 </html>

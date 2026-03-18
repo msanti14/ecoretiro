@@ -21,6 +21,14 @@
                 </div>
             </div>
 
+            <div class="window-menubar">
+                <a href="home.html" class="window-menubar-item">🏠 Inicio</a>
+                <a href="nueva-solicitud.html" class="window-menubar-item">➕ Nueva Solicitud</a>
+                <a href="tracking.html" class="window-menubar-item">📦 Seguimiento</a>
+                <a href="perfil.html" class="window-menubar-item active">👤 Perfil</a>
+                <a class="window-menubar-item" id="menuLogout">🔒 Cerrar Sesión</a>
+            </div>
+
             <!-- Contenido -->
             <div class="window-content window-content-scroll">
                 <div class="header header-flex">
@@ -30,11 +38,15 @@
                     <div class="user-info">
                         <div class="user-avatar">🧑</div>
                         <div>
-                            <div class="user-name">Santiago Pérez</div>
-                            <div class="user-email">santiago@email.com</div>
+                            <div id="headerName" class="user-name">Cargando...</div>
+                            <div id="headerEmail" class="user-email"></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Mensajes -->
+                <div id="successMsg" class="success-msg" hidden></div>
+                <div id="errorMsg" class="error-msg" hidden></div>
 
                 <!-- Info de usuario (solo lectura) -->
                 <div class="section-title">📋 Información de Cuenta</div>
@@ -42,47 +54,58 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Nombre completo</div>
-                        <div class="info-value">Santiago Pérez</div>
+                        <div id="infoName" class="info-value">—</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Correo electrónico</div>
-                        <div class="info-value">santiago@email.com</div>
+                        <div id="infoEmail" class="info-value">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Teléfono</div>
+                        <div id="infoPhone" class="info-value">—</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Miembro desde</div>
-                        <div class="info-value">15 de enero de 2026</div>
+                        <div id="infoSince" class="info-value">—</div>
                     </div>
                 </div>
 
                 <div class="separator"><span>✏️</span></div>
 
                 <!-- Formulario de edición -->
-                <div class="form-section">
-                    <div class="section-title">🔧 Editar Perfil</div>
+                <form id="profileForm">
+                    <div class="form-section">
+                        <div class="section-title">🔧 Editar Perfil</div>
 
-                    <div class="form-group">
-                        <label for="nombre">Nombre completo</label>
-                        <input type="text" id="nombre" value="Santiago Pérez" placeholder="Tu nombre completo">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password-actual">Contraseña actual</label>
-                        <input type="password" id="password-actual" placeholder="Ingresá tu contraseña actual">
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
-                            <label for="password-nueva">Nueva contraseña</label>
-                            <input type="password" id="password-nueva" placeholder="Mínimo 8 caracteres">
+                            <label for="editName">Nombre completo</label>
+                            <input type="text" id="editName" placeholder="Tu nombre completo">
                         </div>
-                        <div class="form-group">
-                            <label for="password-confirmar">Confirmar contraseña</label>
-                            <input type="password" id="password-confirmar" placeholder="Repetí la contraseña">
-                        </div>
-                    </div>
 
-                    <button class="btn-retro">💾 Guardar Cambios</button>
-                </div>
+                        <div class="form-group">
+                            <label for="editPhone">Teléfono</label>
+                            <input type="text" id="editPhone" placeholder="Solo dígitos, 7 a 15 caracteres">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currentPassword">Contraseña actual</label>
+                            <input type="password" id="currentPassword" placeholder="Solo si cambiás contraseña">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newPassword">Nueva contraseña</label>
+                                <input type="password" id="newPassword" placeholder="Mínimo 8 caracteres">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirmar contraseña</label>
+                                <input type="password" id="confirmPassword" placeholder="Repetí la contraseña">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="saveBtn" class="btn-retro">💾 Guardar Cambios</button>
+                    </div>
+                </form>
 
                 <div class="separator"><span>🔔</span></div>
 
@@ -90,34 +113,9 @@
                 <div class="section-title">🔔 Notificaciones Recientes</div>
 
                 <div class="result-panel">
-                    <ul class="activity-feed">
+                    <ul id="notifList" class="activity-feed">
                         <li class="activity-item">
-                            <div class="activity-icon">✓</div>
-                            <div class="activity-text">
-                                Tu solicitud <strong>ECO-USH-2026-0048</strong> fue marcada como <strong>COMPLETADA</strong>
-                            </div>
-                            <div class="activity-time">Hace 2h</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">🚚</div>
-                            <div class="activity-text">
-                                El operador está <strong>EN CAMINO</strong> para ECO-USH-2026-0048
-                            </div>
-                            <div class="activity-time">Hace 5h</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">📅</div>
-                            <div class="activity-text">
-                                Tu solicitud <strong>ECO-USH-2026-0048</strong> fue agendada para el 10/03/2026
-                            </div>
-                            <div class="activity-time">Hace 1 día</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">📋</div>
-                            <div class="activity-text">
-                                Solicitud <strong>ECO-USH-2026-0048</strong> creada exitosamente
-                            </div>
-                            <div class="activity-time">Hace 3 días</div>
+                            <div class="activity-text">Cargando notificaciones...</div>
                         </li>
                     </ul>
                 </div>
@@ -137,5 +135,179 @@
     </div>
 
     <script src="../js/window-system.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+    (function () {
+      'use strict';
+
+      /* ---- Auth guard ---- */
+      if (!EcoRetiroAPI.getToken()) {
+        EcoRetiroAPI.redirectToLogin();
+        return;
+      }
+
+      document.getElementById('menuLogout').addEventListener('click', function () {
+        localStorage.removeItem('ecoretiro-token');
+        window.location.href = 'login.html';
+      });
+
+      /* ---- Helpers ---- */
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      function formatDate(iso) {
+        var d = new Date(iso);
+        var months = ['enero','febrero','marzo','abril','mayo','junio',
+                      'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+        return d.getDate() + ' de ' + months[d.getMonth()] + ' de ' + d.getFullYear();
+      }
+
+      function timeAgo(iso) {
+        var now = Date.now();
+        var then = new Date(iso).getTime();
+        var diff = Math.floor((now - then) / 1000);
+        if (diff < 60) return 'Hace un momento';
+        if (diff < 3600) return 'Hace ' + Math.floor(diff / 60) + ' min';
+        if (diff < 86400) return 'Hace ' + Math.floor(diff / 3600) + 'h';
+        return 'Hace ' + Math.floor(diff / 86400) + ' día' + (Math.floor(diff / 86400) > 1 ? 's' : '');
+      }
+
+      /* ---- DOM refs ---- */
+      var headerName      = document.getElementById('headerName');
+      var headerEmail     = document.getElementById('headerEmail');
+      var infoName        = document.getElementById('infoName');
+      var infoEmail       = document.getElementById('infoEmail');
+      var infoPhone       = document.getElementById('infoPhone');
+      var infoSince       = document.getElementById('infoSince');
+      var editName        = document.getElementById('editName');
+      var editPhone       = document.getElementById('editPhone');
+      var currentPassword = document.getElementById('currentPassword');
+      var newPassword     = document.getElementById('newPassword');
+      var confirmPassword = document.getElementById('confirmPassword');
+      var profileForm     = document.getElementById('profileForm');
+      var saveBtn         = document.getElementById('saveBtn');
+      var successMsg      = document.getElementById('successMsg');
+      var errorMsg        = document.getElementById('errorMsg');
+      var notifList       = document.getElementById('notifList');
+
+      /* ---- Load user data ---- */
+      function loadUser() {
+        EcoRetiroAPI.getCurrentUser().then(function (user) {
+          headerName.textContent = escapeHtml(user.name);
+          headerEmail.textContent = escapeHtml(user.email);
+          infoName.textContent = escapeHtml(user.name);
+          infoEmail.textContent = escapeHtml(user.email);
+          infoPhone.textContent = user.phone ? escapeHtml(user.phone) : 'No registrado';
+          infoSince.textContent = formatDate(user.created_at);
+          editName.value = user.name;
+          editPhone.value = user.phone || '';
+        });
+      }
+
+      /* ---- Load notifications ---- */
+      function loadNotifications() {
+        EcoRetiroAPI.getMyNotifications().then(function (notifs) {
+          notifList.innerHTML = '';
+          if (!notifs.length) {
+            notifList.innerHTML = '<li class="activity-item"><div class="activity-text">Sin notificaciones</div></li>';
+            return;
+          }
+          notifs.forEach(function (n) {
+            var li = document.createElement('li');
+            li.className = 'activity-item' + (n.is_read ? '' : ' unread');
+
+            var icon = document.createElement('div');
+            icon.className = 'activity-icon';
+            icon.textContent = n.is_read ? '📋' : '🔔';
+
+            var text = document.createElement('div');
+            text.className = 'activity-text';
+            text.textContent = n.message;
+
+            var time = document.createElement('div');
+            time.className = 'activity-time';
+            time.textContent = timeAgo(n.created_at);
+
+            li.appendChild(icon);
+            li.appendChild(text);
+            li.appendChild(time);
+
+            if (!n.is_read) {
+              li.addEventListener('click', function () {
+                EcoRetiroAPI.markNotificationRead(n.id).then(function () {
+                  li.classList.remove('unread');
+                  icon.textContent = '📋';
+                });
+              });
+            }
+
+            notifList.appendChild(li);
+          });
+        });
+      }
+
+      /* ---- Profile form submit ---- */
+      profileForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        successMsg.hidden = true;
+        errorMsg.hidden = true;
+
+        var data = {};
+        var name = editName.value.trim();
+        var phone = editPhone.value.trim();
+        var curPwd = currentPassword.value;
+        var newPwd = newPassword.value;
+        var confPwd = confirmPassword.value;
+
+        if (name) data.name = name;
+        if (phone) data.phone = phone;
+
+        if (newPwd) {
+          if (newPwd !== confPwd) {
+            errorMsg.hidden = false;
+            errorMsg.textContent = 'Las contraseñas no coinciden';
+            return;
+          }
+          data.password = newPwd;
+          data.current_password = curPwd;
+        }
+
+        if (Object.keys(data).length === 0) {
+          errorMsg.hidden = false;
+          errorMsg.textContent = 'No hay cambios para guardar';
+          return;
+        }
+
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Guardando...';
+
+        EcoRetiroAPI.updateProfile(data)
+          .then(function (user) {
+            successMsg.hidden = false;
+            successMsg.textContent = '✅ Perfil actualizado correctamente';
+            currentPassword.value = '';
+            newPassword.value = '';
+            confirmPassword.value = '';
+            loadUser();
+          })
+          .catch(function (err) {
+            errorMsg.hidden = false;
+            errorMsg.textContent = err.message || 'Error al actualizar perfil';
+          })
+          .then(function () {
+            saveBtn.disabled = false;
+            saveBtn.textContent = '💾 Guardar Cambios';
+          });
+      });
+
+      /* ---- Init ---- */
+      loadUser();
+      loadNotifications();
+    })();
+    </script>
 </body>
 </html>

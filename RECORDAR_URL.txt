@@ -1,0 +1,4 @@
+Lo único que tenés que hacer ahora
+Antes de la próxima demo, abrís ese archivo:
+bash: code ~/Escritorio/code/ecoretiro/frontend/js/config.js
+Y reemplazás la URL vacía con la que te dé ngrok ese día. Un solo cambio, todo el frontend actualizado.
