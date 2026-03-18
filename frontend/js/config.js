@@ -9,4 +9,4 @@
  *
  * Leave empty ('') to fall back to http://127.0.0.1:8000 (local dev).
  */
-window.ECORETIRO_API_URL = '';
+window.ECORETIRO_API_URL = 'https://topline-cleora-physiognomically.ngrok-free.dev';
