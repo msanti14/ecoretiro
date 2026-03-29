@@ -23,6 +23,23 @@
 
 ## 🚀 Inicio Rápido
 
+## 🔐 Credenciales de Demo
+
+Usuario precargado para testing:
+
+| Email | Password | Rol | Descripción |
+|-------|----------|-----|-------------|
+| `user1@test.com` | `user1test` | user | Usuario cliente (solicita retiros) |
+
+### Cómo usar:
+1. Abrí `https://msanti14.github.io/ecoretiro/`
+2. Ingresá el email y password de arriba
+3. Explorá las funcionalidades
+
+---
+
+### En Local:
+
 ### Backend
 
 ```bash
@@ -46,20 +63,7 @@ Accedé a `http://localhost:5500/pages/login.html`
 
 ---
 
-## 🔐 Credenciales de Demo
 
-Usuario precargado para testing:
-
-| Email | Password | Rol | Descripción |
-|-------|----------|-----|-------------|
-| `user1@test.com` | `user1test` | user | Usuario cliente (solicita retiros) |
-
-### Cómo usar:
-1. Abrí `https://msanti14.github.io/ecoretiro/`
-2. Ingresá el email y password de arriba
-3. Explorá las funcionalidades
-
----
 
 ## 📁 Estructura del Proyecto
 
@@ -210,11 +214,8 @@ SECRET_KEY=tu-clave-secreta-aqui
 
 ## 👤 Autor
 
-**Santiago** ([@msanti14](https://github.com/msanti14)) — Desarrollador full-stack, Ushuaia, Argentina
+**Santiago** ([@msanti14](https://github.com/msanti14)) — Estudiante de Análisis de Sistemas, Ushuaia - TDF, Argentina
 
 ---
 
-## 📄 Licencia
-
-MIT
 
